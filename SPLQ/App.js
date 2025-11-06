@@ -1,16 +1,75 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 
-import Generico from './Telas/Generico';
+import GenericoScreen from './Telas/Generico';
+import PerfilScreen from './Telas/Perfil';
 
-const Stack = createNativeStackNavigator();
+function PesquisaScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Busca</Text></View>; }
+function HistoricoScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Historico</Text></View>; }
+function FavoritosScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Favoritos</Text></View>; }
+// function PerfilScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Perfil</Text></View>; }
 
-export default function App() {
-  return(
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName = "Generico">
-        <Stack.Screen name="Generico" component={Generico} />
-      </Stack.Navigator>
-    </NavigationContainer>
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function MainTabs() {
+  const insets = useSafeAreaInsets();
+  return (
+    <Tab.Navigator
+      initialRouteName="Inicio"
+      screenOptions={({ route }) => ({
+        headerShown: false, 
+        tabBarStyle: { 
+          // marginBottom: insets.bottom,
+          // backgroundColor: 'red'
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName = '';
+          if (route.name === 'Inicio') iconName = focused ? 'home' : 'home-outline';
+          else if (route.name === 'Pesquisa') iconName = focused ? 'search' : 'search-outline';
+          else if (route.name === 'Historico') iconName = focused ? 'calendar' : 'calendar-outline';
+          else if (route.name === 'Favoritos') iconName = focused ? 'heart' : 'heart-outline';
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'black', 
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Inicio" component={GenericoScreen} options={{ title: 'Início'}} />
+      <Tab.Screen name="Pesquisa" component={PesquisaScreen} options={{ title: 'Pesquisa'}} />
+      <Tab.Screen name="Historico" component={HistoricoScreen} options={{ title: 'Histórico'}} />
+      <Tab.Screen name="Favoritos" component={FavoritosScreen} options={{ title: 'Favoritos'}} />
+    </Tab.Navigator>
+  );
+}
+
+function header(){
+  return (
+    <View>
+      <View style={{ paddingTop: 20, backgroundColor: '#ffffffaa' }} />
+      <View style={{margin: '2%', alignItems: 'flex-end',}}>
+        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+          <Image source={require('./assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
+export default function AppNavigator() {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false, header: header }}>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="Perfil" component={PerfilScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
