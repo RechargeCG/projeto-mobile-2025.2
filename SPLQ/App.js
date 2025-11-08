@@ -18,7 +18,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
-  const insets = useSafeAreaInsets();
+  // const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       initialRouteName="Inicio"
@@ -48,24 +48,11 @@ function MainTabs() {
   );
 }
 
-function header(){
-  return (
-    <View>
-      <View style={{ paddingTop: 20, backgroundColor: '#ffffffaa' }} />
-      <View style={{margin: '2%', alignItems: 'flex-end',}}>
-        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-          <Image source={require('./assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
 export default function AppNavigator() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false, header: header }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="Perfil" component={PerfilScreen} />
         </Stack.Navigator>
