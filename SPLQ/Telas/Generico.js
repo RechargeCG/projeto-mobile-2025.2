@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
@@ -8,6 +8,7 @@ const image = require('../assets/background.png');
 
 export default function GenericoScreen({ navigation }) {
   const [date, setDate] = useState('');
+  const [name, setName] = useState('');
 
   return (
     <View style={styles.wrapper}>
@@ -22,7 +23,7 @@ export default function GenericoScreen({ navigation }) {
       </View>
       <View style={styles.body}>
         <View style={styles.container}>
-          <KeyboardAwareScrollView>
+          {/* <KeyboardAwareScrollView> */}
             <ScrollView>
               <Text style={styles.screentitle}>Título da página</Text>
               <View style={styles.coverBox}>
@@ -40,13 +41,13 @@ export default function GenericoScreen({ navigation }) {
                 />
               </View>
               <View style={styles.boxContainer}> 
-                <Text style={styles.labelText}>Data de nascimento</Text>
+                <Text style={styles.labelText}>Nome</Text>
                 <TextInput
                   style={styles.inputField}
-                  placeholder='DD/MM/AAAA'
+                  placeholder='Nome'
                   placeholderTextColor="rgba(255, 255, 255, 0.7)"
-                  value={date}
-                  onChangeText={setDate}
+                  value={name}
+                  onChangeText={setName}
                 />
               </View>
 
@@ -56,7 +57,7 @@ export default function GenericoScreen({ navigation }) {
               <Text style={styles.screentitle}>Título da página</Text>
               <Text style={styles.screentitle}>Título da página</Text>
             </ScrollView>
-          </KeyboardAwareScrollView>
+          {/* </KeyboardAwareScrollView> */}
         </View>
       </View>
     </View>
