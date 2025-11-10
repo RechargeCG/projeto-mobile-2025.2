@@ -8,6 +8,8 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 import GenericoScreen from './Telas/Generico';
 import PerfilScreen from './Telas/Perfil';
+import LoginScreen from './Telas/Login';
+import { useState } from 'react';
 
 function PesquisaScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Busca</Text></View>; }
 function HistoricoScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Historico</Text></View>; }
@@ -49,14 +51,25 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
-  return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen name="Perfil" component={PerfilScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
-  );
+  const [logado, setLogado] = useState(false);
+  
+  if (!logado) {
+    return (
+      <SafeAreaProvider>
+        <LoginScreen></LoginScreen>
+      </SafeAreaProvider>
+    );
+  }
+  else {
+    return (
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen name="Perfil" component={PerfilScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    );
+  }
 }

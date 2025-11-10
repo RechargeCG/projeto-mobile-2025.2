@@ -6,6 +6,8 @@ export const GlobalStyles = {
   },
   background: {
     ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%'
   },
   container: {
     flex: 1,
@@ -62,19 +64,17 @@ export const GlobalStyles = {
     zIndex: 10,
   },
   inputField: {
-    width: '100%',
-    height: '100%',
     backgroundColor: 'rgba(85, 85, 85, 0.55)',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 11,
     paddingHorizontal: 15,
-    paddingTop: 20,
+    paddingBottom: 20,
     color: 'white',
     fontSize: 15,
   },
   buttonContainer: {
-    width: 317,
+    width: '100%',
     height: 46,
     backgroundColor: '#222222',
     borderWidth: 1,
