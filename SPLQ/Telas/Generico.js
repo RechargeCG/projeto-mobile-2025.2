@@ -196,18 +196,18 @@ export default function GenericoScreen({ navigation }) {
               <Text style={styles.sectiontitle}>Caixa de texto expansível</Text>
               <View style={styles.expandableBoxContainer}>
                 <View style={styles.expandableBoxField}>
+                  <Text 
+                    style={styles.expandableBoxText}
+                    numberOfLines={isTextExpanded ? undefined : 6} 
+                  >
+                    {/*Texto a ser exibido*/}
+                    {descriptiontext}
+                  </Text>
+                  
                   <TouchableOpacity
                     onPress={() => canBeExpanded ? setIsTextExpanded(!isTextExpanded):0} 
                     style={styles.expandableButton}
                   >
-                    <Text 
-                      style={styles.expandableBoxText}
-                      numberOfLines={isTextExpanded ? undefined : 6} 
-                    >
-                      {/*Texto a ser exibido*/}
-                      {descriptiontext}
-                    </Text>
-                    
                     {canBeExpanded && 
                       <Text style={styles.expandableButtonText}>
                         {isTextExpanded ? '... Ler Menos' : '... Ler Mais'}

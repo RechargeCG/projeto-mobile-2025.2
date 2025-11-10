@@ -235,13 +235,9 @@ export const GlobalStyles = {
     textAlign: 'center',
     fontSize: 16,
   },
-  // Container principal da caixa expansível (apenas margens)
   expandableBoxContainer: {
     marginVertical: 10,
-    // Não precisa de altura fixa, o conteúdo define a altura
   },
-
-  // View que imita o inputField visualmente
   expandableBoxField: {
     backgroundColor: 'rgba(15, 16, 16, 0.4)',
     borderWidth: 1,
@@ -250,21 +246,16 @@ export const GlobalStyles = {
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
-
-  // Estilo do Texto
   expandableBoxText: {
     color: 'white',
     fontSize: 15,
     paddingTop: 5,
     paddingBottom: 5,
-    // A chave da truncagem é o numberOfLines no JSX
   },
-  
-  // Estilos para o botão "Ler Mais"
   expandableButton: {
     marginTop: 5,
     paddingVertical: 5,
-    alignSelf: 'flex-start', // Garante que o touch area seja pequeno
+    alignSelf: 'flex-start',
   },
   expandableButtonText: {
     color: 'white',
