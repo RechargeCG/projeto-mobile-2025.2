@@ -1,6 +1,6 @@
 ﻿import { StyleSheet } from "react-native";
 
-const GlobalStyles = {
+export const GlobalStyles = {
   wrapper: {
     flex: 1,
   },
@@ -38,8 +38,6 @@ const GlobalStyles = {
   cover: {
     margin: '5%',
     alignSelf: 'center',
-    // maxWidth: '70%',
-    // maxHeight: '70%'
   },
   coverBox: {
     flex: 1,
@@ -74,8 +72,61 @@ const GlobalStyles = {
     paddingTop: 20,
     color: 'white',
     fontSize: 15,
+  },
+  buttonContainer: {
+    width: 317,
+    height: 46,
+    backgroundColor: '#222222',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginVertical: '10'
+  },
+  buttonText: {
+    color: 'white',
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  // --- NOVOS ESTILOS PARA LISTAS (HORIZONTAL) ---
+  listContainerHorizontal: {
+    height: 146,
+  },
+  listContentHorizontal: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 5,
+  },
+  listImageItem: {
+    width: 104,
+    height: 146,
+    borderRadius: 5,
+  },
+  
+  // --- NOVOS ESTILOS PARA LISTAS (GRID - CORRIGIDO) ---
+  listContainerGrid: {
+    paddingHorizontal: 6, 
+  },
+  
+  // CORRIGIDO: Wrapper com largura percentual e margem para espaçamento
+  gridItemWrapper: {
+    // 31.33% garante que cabem 3 itens na linha com margem de 1% entre eles.
+    width: '31.33%', 
+    marginVertical: 6,
+    marginHorizontal: '1%', 
+  },
+  
+  listGridImage: {
+    // CORRIGIDO: Usa 100% da largura do wrapper
+    width: '100%', 
+    // Garante que a altura seja proporcional à largura 
+    aspectRatio: 104 / 146, 
+    borderRadius: 5,
   }
-
 };
 
 export const mergeStyles = (LocalStyles) => {
