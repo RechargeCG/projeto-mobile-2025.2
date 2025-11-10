@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, FlatList, TouchableOpacity, TextInput } from 'react-native';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState, useEffect } from 'react';
-import { mergeStyles } from '../components/GlobalStyles';
+import { useState } from 'react';
+import { mergeStyles } from '../components/GlobalStyles'; // Garanta que este import exista e funcione!
 
 const image = require('../assets/background.png');
 const OnePieceCover = require('../assets/one-piece.png');
@@ -20,74 +20,25 @@ const covers = [
   { id: 7, source: OnePieceCover, title: "One Piece 2" },
   { id: 8, source: DragonBallCover, title: "DB Super 2" },
   { id: 9, source: DemonSlayerCover, title: "Demon Slayer 3" },
-  { id: 10, primary: true, source: JujutsuKaisenCover, title: "Jujutsu Kaisen 3" }, // Marcado como primário para testar item único na última linha
+  { id: 10, primary: true, source: JujutsuKaisenCover, title: "Jujutsu Kaisen 3" },
 ];
 
 const NUM_COLUMNS = 3;
 
-const HorizontalList = () => (
-  <ScrollView 
-    style={styles.listContainerHorizontal}
-    horizontal={true} 
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={styles.listContentHorizontal}
-  >
-    {covers.map((item, index) => (
-      // Envolvendo a Imagem em TouchableOpacity
-      <TouchableOpacity
-        key={item.id}
-        // onnPress intencionalmente vazio, pois 'não é para mexer com variável'
-      >
-        <Image
-          source={item.source}
-          style={[
-            styles.listImageItem, 
-            index !== 0 && { marginLeft: 6 }
-          ]}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
-);
-
-// CORRIGIDO: Substituímos FlatList por View para evitar conflitos de rolagem
-const GridList = () => {
-  return (
-    <View 
-      style={[
-        styles.listContainerGrid,
-        { 
-          // CRUCIAL: Flexbox para permitir o quebramento de linha (grid)
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-start', // Garante que itens incompletos não expandam
-        }
-      ]}
-    >
-      {covers.map((item) => (
-        // Envolvendo a Imagem em TouchableOpacity
-        <TouchableOpacity
-          key={item.id}
-          // onnPress intencionalmente vazio, pois 'não é para mexer com variável'
-          style={styles.gridItemWrapper} // Usa o wrapper com largura percentual (31.33%)
-        >
-          <Image
-            source={item.source}
-            style={styles.listGridImage}
-            resizeMode="cover"
-          />
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
+// Função auxiliar para agrupar o array em linhas de N elementos
+const chunkArray = (arr, size) => {
+  const chunkedArr = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunkedArr.push(arr.slice(i, i + size));
+  }
+  return chunkedArr;
 };
+
+const chunkedCovers = chunkArray(covers, NUM_COLUMNS);
 
 export default function GenericoScreen({ navigation }) {
   const [date, setDate] = useState('');
   const [name, setName] = useState('');
-
-  const styles = mergeStyles({});
 
   return (
     <View style={styles.wrapper}>
@@ -102,8 +53,8 @@ export default function GenericoScreen({ navigation }) {
       </View>
       <View style={styles.body}>
         <View style={styles.container}>
-          {/* <KeyboardAwareScrollView> */}
-            <ScrollView>
+          <KeyboardAwareScrollView style={{flex: 1}}>
+            <ScrollView >
               <Text style={styles.screentitle}>Título da página</Text>
               <View style={styles.coverBox}>
                 <Image source={require('../assets/capa.png')} style={styles.cover} />
@@ -119,7 +70,7 @@ export default function GenericoScreen({ navigation }) {
                   onChangeText={setDate}
                 />
               </View>
-              <View style={styles.boxContainer}> 
+              <View style={styles.boxContainer}>
                 <Text style={styles.labelText}>Nome</Text>
                 <TextInput
                   style={styles.inputField}
@@ -137,20 +88,75 @@ export default function GenericoScreen({ navigation }) {
                 <Text style={styles.buttonText}>Editar Perfil</Text>
               </TouchableOpacity>
 
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
+              {/* --- LISTA ROLÁVEL (HORIZONTAL) --- */}
+              <Text style={styles.sectiontitle}>Capas Roláveis (Horizontal)</Text>
+              <ScrollView 
+                style={styles.listContainerHorizontal}
+                horizontal={true} 
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listContentHorizontal}
+              >
+                {covers.map((item, index) => (
+                  <TouchableOpacity key={item.id}>
+                    <Image
+                      source={item.source}
+                      style={[
+                        styles.listImageItem, 
+                        index !== 0 && { marginLeft: 6 }
+                      ]}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                ))}
+                {/* Aqui você replicaria a estrutura se quisesse adicionar mais capas na lista rolável */}
+              </ScrollView>
 
               <View style={{ height: 30 }} />
 
-              <Text style={styles.covertitle}>Capas Empilhadas (Grid 3x)</Text>
-              <GridList />
+              {/* --- LISTA EMPILHADA (GRID 3X) --- */}
+              <Text style={styles.sectiontitle}>Capas Empilhadas (Grid 3x)</Text>
+              <View style={styles.listContainerGrid}>
+                {chunkedCovers.map((row, rowIndex) => (
+                  // <linha>
+                  <View 
+                    key={rowIndex}
+                    style={{ 
+                      flexDirection: 'row', 
+                      justifyContent: 'flex-start', // Garante que não haja expansão
+                    }}
+                  >
+                    {row.map((item, colIndex) => (
+                      // <capa>
+                      <TouchableOpacity
+                        key={item.id}
+                        style={styles.gridItemWrapper} // 31.33% de largura e margem
+                      >
+                        <Image
+                          source={item.source}
+                          style={[styles.listGridImage,{maxHeight: '100%'}]} // width: 100% e aspectRatio
+                          resizeMode="cover" // Garante que a imagem preencha e seja cortada se necessário
+                        />
+                      </TouchableOpacity>
+                    ))}
+                    
+                    {/* Preenchimento dos espaços vazios se a linha não estiver completa (apenas na última linha) */}
+                    {rowIndex === chunkedCovers.length - 1 && row.length < NUM_COLUMNS && 
+                      [...Array(NUM_COLUMNS - row.length)].map((_, emptyIndex) => (
+                        // Aqui inserimos Views invisíveis para ocupar o espaço.
+                        <View key={`empty-${emptyIndex}`} style={styles.gridItemWrapper} />
+                      ))
+                    }
+                  </View>
+                  // </linha>
+                ))}
+              </View>
               
             </ScrollView>
-          {/* </KeyboardAwareScrollView> */}
+          </KeyboardAwareScrollView>
         </View>
       </View>
     </View>
   );
 }
 
-const styles = mergeStyles({})
+const styles = mergeStyles({});

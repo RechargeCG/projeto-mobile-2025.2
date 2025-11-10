@@ -1,4 +1,5 @@
 ﻿import { StyleSheet } from "react-native";
+import { useResizeMode } from "react-native-keyboard-controller";
 
 export const GlobalStyles = {
   wrapper: {
@@ -49,15 +50,14 @@ export const GlobalStyles = {
     marginBottom: '10%'
   },
   boxContainer: {
-    height: '80',
-    marginVertical: '10'
+    marginVertical: 10,
   },
   labelText: {
     width: 215,
     color: 'white',
     position: 'absolute',
     top: 2,
-    left: 15,
+    left: 17,
     fontFamily: 'Montserrat',
     fontWeight: 'bold',
     fontSize: 15,
@@ -69,7 +69,6 @@ export const GlobalStyles = {
     borderColor: 'white',
     borderRadius: 11,
     paddingHorizontal: 15,
-    marginBottom: 20,
     paddingTop: 20,
     paddingBottom: 20,
     color: 'white',
@@ -106,29 +105,30 @@ export const GlobalStyles = {
   listImageItem: {
     width: 104,
     height: 146,
-    borderRadius: 5,
   },
-  
-  // --- NOVOS ESTILOS PARA LISTAS (GRID - CORRIGIDO) ---
+  //Grid
+  sectiontitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFF',
+    // marginHorizontal: 10,
+    marginTop: 15,
+    marginBottom: 10,
+  },
   listContainerGrid: {
-    paddingHorizontal: 6, 
+    marginBottom: 20,
   },
-  
-  // CORRIGIDO: Wrapper com largura percentual e margem para espaçamento
   gridItemWrapper: {
-    // 31.33% garante que cabem 3 itens na linha com margem de 1% entre eles.
-    width: '31.33%', 
-    marginVertical: 6,
-    marginHorizontal: '1%', 
+    width: '31.33%',
+    height: 210,
+    marginRight: '2%',
+    marginBottom: '2.5%',
+    backgroundColor: 'red'
   },
-  
   listGridImage: {
-    // CORRIGIDO: Usa 100% da largura do wrapper
-    width: '100%', 
-    // Garante que a altura seja proporcional à largura 
-    aspectRatio: 104 / 146, 
-    borderRadius: 5,
-  }
+    width: '100%',
+    useResizeMode: 'cover'
+  },
 };
 
 export const mergeStyles = (LocalStyles) => {
