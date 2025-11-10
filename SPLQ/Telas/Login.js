@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { Button } from 'react-native-web';
+import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+
+  const { setLogado } = useContext(AppContext);
 
   return (
     <View style={{flex:1}}>
@@ -31,7 +34,7 @@ export default function LoginScreen({ navigation }) {
                 value={senha}
                 onChangeText={setSenha}
             />
-            <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}}>
+            <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={() => setLogado(true)}>
                 <Text style={styles.buttonText}>Fazer Login</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{marginTop: '100px'}}>
