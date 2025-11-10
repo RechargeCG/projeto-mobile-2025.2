@@ -69,6 +69,8 @@ export const GlobalStyles = {
     borderColor: 'white',
     borderRadius: 11,
     paddingHorizontal: 15,
+    marginBottom: 20,
+    paddingTop: 20,
     paddingBottom: 20,
     color: 'white',
     fontSize: 15,
