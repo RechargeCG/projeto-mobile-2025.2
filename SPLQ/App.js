@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 import GenericoScreen from './Telas/Generico';
+import PrincipalScreen from './Telas/Principal';
 import PerfilScreen from './Telas/Perfil';
 import LoginScreen from './Telas/Login';
 import { useContext, useState } from 'react';
@@ -43,7 +44,7 @@ function MainTabs() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Inicio" component={GenericoScreen} options={{ title: 'Início'}} />
+      <Tab.Screen name="Inicio" component={PrincipalScreen} options={{ title: 'Início'}} />
       <Tab.Screen name="Pesquisa" component={PesquisaScreen} options={{ title: 'Pesquisa'}} />
       <Tab.Screen name="Historico" component={HistoricoScreen} options={{ title: 'Histórico'}} />
       <Tab.Screen name="Favoritos" component={FavoritosScreen} options={{ title: 'Favoritos'}} />
