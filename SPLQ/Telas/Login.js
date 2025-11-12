@@ -45,10 +45,10 @@ export default function LoginScreen({ navigation }) {
               onChangeText={setSenha}
           />
         </View>
-        <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={() => setLogado(true)}>
+        <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: '100px'}}>
+        <TouchableOpacity style={{marginTop: '10px'}}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>

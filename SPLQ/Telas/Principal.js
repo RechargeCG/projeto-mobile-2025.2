@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
 // import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
@@ -24,6 +24,21 @@ const covers = [
 ];
 
 const NUM_COLUMNS = 3;
+
+const Item = ({image}) => (
+  <View style={styles.item}>
+    <Image source={image} style={styles.cover} />
+    <Text style={styles.covertitle}>Título da capa</Text>
+  </View>
+);
+
+const DestaqueList = () => (
+  <FlatList
+    data={covers}
+    renderItem={({item}) => <Item image={item.source}/>}
+    keyExtractor={item => item.id}
+  />
+)
 
 const HorizontalList = () => (
   <ScrollView 
@@ -106,8 +121,7 @@ export default function PrincipalScreen({ navigation }) {
             <ScrollView>
               <Text style={styles.screentitle}>Título da página</Text>
               <View style={styles.coverBox}>
-                <Image source={require('../assets/capa.png')} style={styles.cover} />
-                <Text style={styles.covertitle}>Título da capa</Text>
+                <DestaqueList></DestaqueList>
               </View>
               
               <View style={{ height: 30 }} />
