@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
+import CarouselComponent from '../components/CarouselComponent';
 
 const image = require('../assets/background.png');
 const OnePieceCover = require('../assets/one-piece.png');
@@ -33,11 +34,7 @@ const Item = ({image}) => (
 );
 
 const DestaqueList = () => (
-  <FlatList
-    data={covers}
-    renderItem={({item}) => <Item image={item.source}/>}
-    keyExtractor={item => item.id}
-  />
+  <CarouselComponent data={covers}/>
 )
 
 const HorizontalList = () => (
