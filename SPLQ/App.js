@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import GenericoScreen from './Telas/Generico';
 import PrincipalScreen from './Telas/Principal';
@@ -78,7 +79,9 @@ function ConteudoNavegacao() {
 export default function AppNavigator() {
   return (
     <AppProvider>
-      <ConteudoNavegacao />
+      <KeyboardProvider>
+        <ConteudoNavegacao />
+      </KeyboardProvider>
     </AppProvider>
   );
 }
