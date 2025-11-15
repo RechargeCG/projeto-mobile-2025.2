@@ -37,7 +37,7 @@ const DestaqueList = () => (
   <CarouselComponent data={covers}/>
 )
 
-const HorizontalList = () => (
+const HorizontalList = ({ navigation }) => (
   <ScrollView 
     style={styles.listContainerHorizontal}
     horizontal={true} 
@@ -49,6 +49,7 @@ const HorizontalList = () => (
       <TouchableOpacity
         key={item.id}
         // onnPress intencionalmente vazio, pois 'não é para mexer com variável'
+        onPress={() => navigation.navigate('Quadrinho')}
       >
         <Image
           source={item.source}
@@ -114,25 +115,26 @@ export default function PrincipalScreen({ navigation }) {
       </View>
       <View style={styles.body}>
         <View style={styles.container}>
-          {/* <KeyboardAwareScrollView> */}
-            <ScrollView>
-              <Text style={styles.screentitle}>Título da página</Text>
-              <View style={styles.coverBox}>
-                <DestaqueList></DestaqueList>
-              </View>
-              
-              <View style={{ height: 30 }} />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <View style={{ height: 30 }} />
+          <ScrollView>
+            <Text style={styles.screentitle}>Título da página</Text>
+            <View style={styles.coverBox}>
+              <DestaqueList></DestaqueList>
+            </View>
+            
+            <View style={{ height: 30 }} />
+            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
+            <HorizontalList navigation={navigation} />
 
-         
-            </ScrollView>
-          {/* </KeyboardAwareScrollView> */}
+            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
+            <HorizontalList navigation={navigation} />
+
+            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
+            <HorizontalList navigation={navigation} />
+
+            <View style={{ height: 30 }} />
+
+        
+          </ScrollView>
         </View>
       </View>
     </View>

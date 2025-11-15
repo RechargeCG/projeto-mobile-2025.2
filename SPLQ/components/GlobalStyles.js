@@ -151,7 +151,7 @@ export const GlobalStyles = {
   },
   modalContent: {
     margin: 20,
-    backgroundColor: '#333333',
+    backgroundColor: '#222222',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

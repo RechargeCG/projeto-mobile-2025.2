@@ -13,7 +13,7 @@ export default function LoginScreen({ navigation }) {
   const { setLogado } = useContext(AppContext);
 
   const fazerLogin = () => {
-    if (email != '' && senha != null) {
+    if (email != '' && senha != '') {
       setLogado(true);
     }
     else {
@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
       <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
-      <KeyboardAvoidingView style={[{flex: 1, justifyContent: 'center', margin: '5%'}]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
           <TextInput
               style={styles.inputField}
