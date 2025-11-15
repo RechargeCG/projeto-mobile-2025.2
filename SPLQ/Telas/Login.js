@@ -1,4 +1,4 @@
-import { Text, View, ImageBackground, TouchableOpacity, TextInput } from 'react-native';
+import { Text, View, ImageBackground, TouchableOpacity, TextInput, Platform, KeyboardAvoidingView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
       <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
-      <View style={[styles.body,{flex: 1, justifyContent: 'center'}]}>
+      <KeyboardAvoidingView style={[{flex: 1, justifyContent: 'center', margin: '5%'}]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
           <TextInput
               style={styles.inputField}
@@ -52,7 +52,7 @@ export default function LoginScreen({ navigation }) {
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
