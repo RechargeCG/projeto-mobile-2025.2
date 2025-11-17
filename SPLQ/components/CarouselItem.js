@@ -1,13 +1,15 @@
   import React from 'react';
-  import { View, Text, StyleSheet, Image } from 'react-native';
+  import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
   import Animated from 'react-native-reanimated';
 
   const CarouselItem = ({ item, index }) => {
     // You can use useAnimatedStyle, useSharedValue, etc. here for item-specific animations
     return (
       <Animated.View style={styles.itemContainer}>
-        <Image source={item.source} style={styles.image} />
-        <Text style={styles.title}>{item.title}</Text>
+        <TouchableOpacity style={{width: '100%'}}>
+          <Image source={item.source} style={styles.image} />
+          <Text style={styles.title}>{item.title}</Text>
+        </TouchableOpacity>
       </Animated.View>
     );
   };
@@ -18,7 +20,6 @@
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 10,
-      marginHorizontal: 10,
     },
     image: {
       width: '100%',
@@ -30,7 +31,8 @@
       fontSize: 18,
       fontWeight: 'bold',
       marginTop: 10,
-      color: 'white'
+      color: 'white',
+      textAlign: 'center'
     },
   });
 
