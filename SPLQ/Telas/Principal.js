@@ -116,22 +116,25 @@ export default function PrincipalScreen({ navigation }) {
       <View style={styles.body}>
         <View style={styles.container}>
           <ScrollView>
-            <Text style={styles.screentitle}>Título da página</Text>
+            <Text style={styles.screentitle}>Destaques</Text>
             <View style={styles.coverBox}>
               <DestaqueList></DestaqueList>
             </View>
             
-            <View style={{ height: 30 }} />
-            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-            <HorizontalList navigation={navigation} />
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Populares</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
 
-            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-            <HorizontalList navigation={navigation} />
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Recentes</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
 
-            <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-            <HorizontalList navigation={navigation} />
-
-            <View style={{ height: 30 }} />
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Nacionais</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
 
         
           </ScrollView>
