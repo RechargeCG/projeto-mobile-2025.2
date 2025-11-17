@@ -37,7 +37,7 @@ const DestaqueList = () => (
   <CarouselComponent data={covers}/>
 )
 
-const HorizontalList = () => (
+const HorizontalList = ({ navigation }) => (
   <ScrollView 
     style={styles.listContainerHorizontal}
     horizontal={true} 
@@ -49,6 +49,7 @@ const HorizontalList = () => (
       <TouchableOpacity
         key={item.id}
         // onnPress intencionalmente vazio, pois 'não é para mexer com variável'
+        onPress={() => navigation.navigate('Quadrinho')}
       >
         <Image
           source={item.source}
@@ -114,25 +115,29 @@ export default function PrincipalScreen({ navigation }) {
       </View>
       <View style={styles.body}>
         <View style={styles.container}>
-          {/* <KeyboardAwareScrollView> */}
-            <ScrollView>
-              <Text style={styles.screentitle}>Título da página</Text>
-              <View style={styles.coverBox}>
-                <DestaqueList></DestaqueList>
-              </View>
-              
-              <View style={{ height: 30 }} />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <Text style={styles.covertitle}>Capas Roláveis (Horizontal)</Text>
-              <HorizontalList />
-              <View style={{ height: 30 }} />
+          <ScrollView>
+            <Text style={styles.screentitle}>Destaques</Text>
+            <View style={styles.coverBox}>
+              <DestaqueList></DestaqueList>
+            </View>
+            
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Populares</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
 
-         
-            </ScrollView>
-          {/* </KeyboardAwareScrollView> */}
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Recentes</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
+
+            <View style={{ marginVertical: 10 }}>
+              <Text style={{...styles.covertitle, textAlign: 'left'}}>Nacionais</Text>
+              <HorizontalList navigation={navigation} />
+            </View>
+
+        
+          </ScrollView>
         </View>
       </View>
     </View>

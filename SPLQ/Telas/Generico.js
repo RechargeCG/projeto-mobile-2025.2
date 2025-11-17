@@ -258,6 +258,7 @@ export default function GenericoScreen({ navigation }) {
                       <TouchableOpacity
                         key={item.id}
                         style={styles.gridItemWrapper}
+                        onPress={() => navigation.navigate('Quadrinho')}
                       >
                         <Image
                           source={item.source}

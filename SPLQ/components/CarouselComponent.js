@@ -38,7 +38,7 @@ const customParallaxAnimation = (value) => {
   const rotateZ = `${interpolate(
     value,
     [-1, 0, 1], 
-    [15, 0, -15], // Angle in degrees
+    [-15, 0, 15], // Angle in degrees
     'extend'
   )}deg`;
 
@@ -47,7 +47,7 @@ const customParallaxAnimation = (value) => {
       value,
       [-1, 0, 1], // Relative position: left, center, right
       [10, 20, 10], // Output range: low, high, low
-      'clamp'
+      'extend'
     )
   );
 

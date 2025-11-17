@@ -13,6 +13,8 @@ import FavoritosScreen from './Telas/Favoritos';
 import GenericoScreen from './Telas/Generico';
 import PrincipalScreen from './Telas/Principal';
 import PerfilScreen from './Telas/Perfil';
+import CapituloScreen from './Telas/Capitulo';
+import QuadrinhoScreen from './Telas/Quadrinho';
 import LoginScreen from './Telas/Login';
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
@@ -100,6 +102,9 @@ function ConteudoNavegacao() {
 
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
 
+          <Stack.Screen name="Perfil" component={CapituloScreen} />
+          <Stack.Screen name="Capitulo" component={CapituloScreen} />
+          <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

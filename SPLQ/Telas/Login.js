@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { AppContext } from '../components/ContextoLogin';
+import CadastroScreen from './Cadastro';
 
 const image = require('../assets/background.png');
 
@@ -13,7 +14,7 @@ export default function LoginScreen({ navigation }) {
   const { setLogado } = useContext(AppContext);
 
   const fazerLogin = () => {
-    if (email != '' && senha != null) {
+    if (email != '' && senha != '') {
       setLogado(true);
     }
     else {
@@ -21,11 +22,16 @@ export default function LoginScreen({ navigation }) {
     }
   }
 
+  const [cadastro, setCadastro] = useState(false);
+
+  if (cadastro)
+    return (<CadastroScreen/>);
+
   return (
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
       <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
-      <KeyboardAvoidingView style={[{flex: 1, justifyContent: 'center', margin: '5%'}]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
           <TextInput
               style={styles.inputField}
@@ -48,7 +54,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: '10px'}}>
+        <TouchableOpacity style={{marginTop: '10px'}} onPress={setCadastro(true)}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>

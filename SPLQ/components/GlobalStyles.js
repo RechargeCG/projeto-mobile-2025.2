@@ -147,11 +147,11 @@ export const GlobalStyles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0)'
   },
   modalContent: {
     margin: 20,
-    backgroundColor: '#333333',
+    backgroundColor: '#222222',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
