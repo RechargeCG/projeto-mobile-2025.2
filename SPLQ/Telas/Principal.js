@@ -136,7 +136,6 @@ export default function PrincipalScreen({ navigation }) {
               <HorizontalList navigation={navigation} />
             </View>
 
-        
           </ScrollView>
         </View>
       </View>

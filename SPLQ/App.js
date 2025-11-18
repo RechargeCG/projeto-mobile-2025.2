@@ -75,7 +75,7 @@ function MainTabs() {
         })}
       />
 
-      <Tab.Screen name="Historico" component={HistoricoScreen} options={{ title: 'Histórico'}} />
+      <Tab.Screen name="Historico" component={GenericoScreen} options={{ title: 'Histórico'}} />
       <Tab.Screen name="Favoritos" component={FavoritosScreen} options={{ title: 'Favoritos'}} />
     </Tab.Navigator>
   );
@@ -83,14 +83,6 @@ function MainTabs() {
 
 function ConteudoNavegacao() {
   const { logado } = useContext(AppContext); // Agora funciona
-
-  if (!logado) {
-    return (
-      <SafeAreaProvider>
-        <LoginScreen />
-      </SafeAreaProvider>
-    );
-  }
 
   return (
     <SafeAreaProvider>
