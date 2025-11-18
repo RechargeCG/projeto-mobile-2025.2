@@ -58,7 +58,7 @@ const customParallaxAnimation = (value) => {
   };
 };
 
-const CarouselComponent = ({ data }) => {
+const CarouselComponent = ({ data, navigation }) => {
   return (
     <Carousel
       loop
@@ -66,7 +66,7 @@ const CarouselComponent = ({ data }) => {
       mode="parallax"
       height={width} // Adjust height as needed
       data={data}
-      renderItem={({ item, index }) => <CarouselItem item={item} index={index} />}
+      renderItem={({ item, index }) => <CarouselItem item={item} index={index} navigation={navigation} />}
     // Optional: Add custom animations or layouts here
       customAnimation={customParallaxAnimation}
     />

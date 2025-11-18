@@ -2,11 +2,11 @@
   import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
   import Animated from 'react-native-reanimated';
 
-  const CarouselItem = ({ item, index }) => {
+  const CarouselItem = ({ item, index, navigation }) => {
     // You can use useAnimatedStyle, useSharedValue, etc. here for item-specific animations
     return (
       <Animated.View style={styles.itemContainer}>
-        <TouchableOpacity style={{width: '100%'}}>
+        <TouchableOpacity style={{width: '100%'}} onPress={() => navigation.navigate('Quadrinho')}>
           <Image source={item.source} style={styles.image} />
           <Text style={styles.title}>{item.title}</Text>
         </TouchableOpacity>

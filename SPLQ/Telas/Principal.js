@@ -33,8 +33,8 @@ const Item = ({image}) => (
   </View>
 );
 
-const DestaqueList = () => (
-  <CarouselComponent data={covers}/>
+const DestaqueList = ({navigation}) => (
+  <CarouselComponent data={covers} navigation={navigation}/>
 )
 
 const HorizontalList = ({ navigation }) => (
@@ -118,7 +118,7 @@ export default function PrincipalScreen({ navigation }) {
           <ScrollView>
             <Text style={styles.screentitle}>Destaques</Text>
             <View style={styles.coverBox}>
-              <DestaqueList></DestaqueList>
+              <DestaqueList navigation={navigation}/>
             </View>
             
             <View style={{ marginVertical: 10 }}>
