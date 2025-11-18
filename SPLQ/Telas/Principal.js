@@ -121,7 +121,7 @@ export default function PrincipalScreen({ navigation }) {
               <DestaqueList navigation={navigation}/>
             </View>
             
-            <View style={{ marginVertical: 10 }}>
+            <View style={{ marginBottom: 10, marginTop: -60 }}>
               <Text style={{...styles.covertitle, textAlign: 'left'}}>Populares</Text>
               <HorizontalList navigation={navigation} />
             </View>
