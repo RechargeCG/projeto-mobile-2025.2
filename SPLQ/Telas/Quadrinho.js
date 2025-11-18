@@ -6,7 +6,7 @@ import { mergeStyles } from '../components/GlobalStyles';
 
 const image = require('../assets/background.png');
 
-export default function PerfilScreen({  }) {
+export default function QuadrinhoScreen({  }) {
   const navigation = useNavigation();
   return (
     <View style={styles.wrapper}>
@@ -23,7 +23,9 @@ export default function PerfilScreen({  }) {
       </View>
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.body}>
-          <Text>A</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Capitulo')}>
+            <Text style={styles.labelText}> Ir para tela de capítulo </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
       <View style={{paddingBottom: useSafeAreaInsets().bottom, backgroundColor: '#ffffffaa', position: 'absolute', bottom: 0, left: 0, right: 0 }} />

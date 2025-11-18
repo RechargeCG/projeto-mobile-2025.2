@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 export const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  const [logado, setLogado] = useState(false);  
+  const [logado, setLogado] = useState(true);  
 
   return (
     <AppContext.Provider value={{ logado, setLogado }}>

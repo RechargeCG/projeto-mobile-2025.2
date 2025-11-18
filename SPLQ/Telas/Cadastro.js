@@ -23,7 +23,7 @@ export default function CadastroScreen({ navigation }) {
 
   const fazerCadastro = () => {
     if (nome && email && senha  && dataNasc) {
-      alert('Cadastro Realizado.')
+      alert('Cadastro Realizado.');
     }
     else {
       alert("Preencha os campos corretamente!");
@@ -73,7 +73,7 @@ export default function CadastroScreen({ navigation }) {
           />
         </View>
         <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerCadastro}>
-            <Text style={styles.buttonText}>Fazer Login</Text>
+            <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{marginTop: '10px'}}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Já tem uma conta?</Text>
