@@ -34,7 +34,7 @@ const ProportionalImageItem = ({ uri }) => {
     <View 
       style={{
         width: imageContainerWidth,
-        marginBottom: 10,
+        // marginBottom: 10,
       }} 
     >
       <Image
@@ -42,7 +42,7 @@ const ProportionalImageItem = ({ uri }) => {
         style={{
           width: '100%',
           aspectRatio: aspectRatio, 
-          backgroundColor: 'red', 
+          backgroundColor: 'black', 
           resizeMode: 'contain', 
         }}
       />
@@ -67,6 +67,25 @@ const todoscapitulos = [
   { id: '13', name: 'Final' },
 ];
 
+const todoscomentarios = [
+  {
+    id: 1,
+    text: "Obrigado pela informação detalhada! Estava procurando exatamente esse ponto sobre a implementação assíncrona. No entanto, notei um pequeno erro na linha 45 do seu código de exemplo. Não deveria ser 'const data = await fetchAPI()' em vez de apenas 'fetchAPI()'? Acredito que isso está causando um race condition em navegadores mais antigos. Além disso, a seção sobre otimização de imagens poderia incluir uma menção sobre o WebP, que é crucial para performance mobile hoje em dia. Poderia expandir um pouco mais sobre isso na próxima atualização? Seria de grande valia para quem está começando em desenvolvimento full-stack.",
+  },
+  {
+    id: 2,
+    text: "Comentário curto.",
+  },
+  {
+    id: 3,
+    text: "Este é um texto um pouco maior, mas não o suficiente para ser expandido, o que torna o botão 'Ler Mais' invisível. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  },
+  {
+    id: 4,
+    text: "Absolutamente fascinante a forma como você abordou a arquitetura de microservices. Principalmente a parte onde descreve a comunicação via Kafka. Tenho tido problemas com a latência na orquestração de eventos e a sua sugestão de usar o padrão Saga com compensação parece ser a solução ideal. Vou tentar implementar isso no meu projeto ainda esta semana e te dou um feedback. Esse artigo salvou meu deadline! Muito obrigado mesmo por compartilhar seu conhecimento técnico com tanta clareza. Você é um mestre!",
+  },
+];
+
 export default function CapituloScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -78,6 +97,14 @@ export default function CapituloScreen() {
   const [page, setPage] = useState(0);
   const [name, setName] = useState('');
   const [imagens, setImagens] = useState([]);
+  const [expandedStates, setExpandedStates] = useState({});
+
+  const toggleExpand = (commentId) => {
+    setExpandedStates(prevStates => ({
+      ...prevStates,
+      [commentId]: !prevStates[commentId],
+    }));
+  };
 
   const totalCapitulos = todoscapitulos.length;
   const totalPaginas = imagens.length;
@@ -335,15 +362,49 @@ export default function CapituloScreen() {
           {/* INPUT NOME (com KeyboardAvoiding) */}
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <View style={styles.boxContainer}>
-              <Text style={styles.labelText}>Nome</Text>
+              <Text style={styles.labelText}>Comentar</Text>
               <TextInput
                 style={styles.inputField}
-                placeholder="Nome"
+                placeholder="Digite seu comentário..."
                 placeholderTextColor="rgba(255,255,255,0.7)"
                 value={name}
                 onChangeText={setName}
               />
             </View>
+            {todoscomentarios.map((item, index) => {
+              const canBeExpanded = item.text.length > 100; 
+              const isTextExpanded = expandedStates[item.id] || false;
+
+              return (
+                <View 
+                  key={item.id}
+                  style={[
+                    styles.expandableBoxContainer, 
+                    index > 0 && { marginTop: 10 }
+                  ]}
+                >
+                  <View style={styles.expandableBoxField}>
+                    <Text 
+                      style={styles.expandableBoxText}
+                      numberOfLines={isTextExpanded ? undefined : 4} 
+                    >
+                      {item.text}
+                    </Text>
+                    
+                    <TouchableOpacity
+                      onPress={() => canBeExpanded ? toggleExpand(item.id) : 0} 
+                      style={styles.expandableButton}
+                    >
+                      {canBeExpanded && 
+                        <Text style={styles.expandableButtonText}>
+                          {isTextExpanded ? '... Ler Menos' : '... Ler Mais'}
+                        </Text>
+                      }
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            })}
           </KeyboardAvoidingView>
         </View>
 
