@@ -1,20 +1,22 @@
 import React, { useState, useCallback } from "react";
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
-  Image, 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
   ImageBackground,
-  Modal
+  Modal,
+  FlatList,
 } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { mergeStyles } from "../components/GlobalStyles";
 
-// Imagens
+// --- CONSTANTES E MOCKS ---
+const MAX_SELECTION_LIMIT = 4;
 const image = require("../assets/background.png");
 const avatar = require("../assets/avatar.png");
 
@@ -23,90 +25,134 @@ const DemonSlayerCover = require("../assets/kimetsu.png");
 const JujutsuKaisenCover = require("../assets/jujutsu.png");
 const DragonBallCover = require("../assets/dragon-ball.png");
 
-const styles = mergeStyles({});
+const mockResults = [
+  // Favoritos / Resultados 1-4
+  { id: 1, title: "Mangá 1", cover: OnePieceCover },
+  { id: 2, title: "Mangá 2", cover: DemonSlayerCover },
+  { id: 3, title: "Mangá 3", cover: JujutsuKaisenCover },
+  { id: 4, title: "Mangá 4", cover: DragonBallCover },
 
-// -----------------------------
-// HEADER NO ESTILO DO FAVORITOS
-// -----------------------------
+  // Favoritos / Resultados 5-8
+  { id: 5, title: "Mangá 5", cover: OnePieceCover },
+  { id: 6, title: "Mangá 6", cover: DemonSlayerCover },
+  { id: 7, title: "Mangá 7", cover: JujutsuKaisenCover },
+  { id: 8, title: "Mangá 8", cover: DragonBallCover },
+
+  // Favoritos / Resultados 9-12
+  { id: 9, title: "Mangá 9", cover: OnePieceCover },
+  { id: 10, title: "Mangá 10", cover: DemonSlayerCover },
+  { id: 11, title: "Mangá 11", cover: JujutsuKaisenCover },
+  { id: 12, title: "Mangá 12", cover: DragonBallCover },
+
+  // Favoritos / Resultados 13-16
+  { id: 13, title: "Mangá 13", cover: OnePieceCover },
+  { id: 14, title: "Mangá 14", cover: DemonSlayerCover },
+  { id: 15, title: "Mangá 15", cover: JujutsuKaisenCover },
+  { id: 16, title: "Mangá 16", cover: DragonBallCover },
+  
+  // Favoritos / Resultados 17-20
+  { id: 17, title: "Mangá 17", cover: OnePieceCover },
+  { id: 18, title: "Mangá 18", cover: DemonSlayerCover },
+  { id: 19, title: "Mangá 19", cover: JujutsuKaisenCover },
+  { id: 20, title: "Mangá 20", cover: DragonBallCover },
+];
+
+const availableTags = [
+  { id: '1', name: 'Ação' },
+  { id: '2', name: 'Aventura' },
+  { id: '3', name: 'Comédia' },
+  { id: '4', name: 'Drama' },
+  { id: '5', name: 'Fantasia' },
+  { id: '6', name: 'Ficção Científica' },
+  { id: '7', name: 'Romance' },
+  { id: '8', name: 'Suspense' },
+  { id: '9', name: 'Terror' },
+  { id: '10', name: 'Esportes' },
+  { id: '11', name: 'Musical' },
+  { id: '12', name: 'Histórico' },
+  { id: '13', name: 'Mecha' },
+  { id: '14', name: 'Slice of Life' },
+];
+
+const releaseOptions = [{id: 'rec', name: "Mais recentes"}, {id: 'ant', name: "Mais antigos"}];
+const popularityOptions = [{id: 'pop', name: "Mais populares"}, {id: 'men', name: "Menos populares"}];
+const alphabeticalOptions = [{id: 'az', name: "A → Z"}, {id: 'za', name: "Z → A"}, {id: 'no', name: "Nenhum"}];
+
+// --- COMPONENTE DE HEADER PADRONIZADO ---
 function AppHeader({ navigation }) {
   const insets = useSafeAreaInsets();
-
   return (
-    <View style={{ width: "100%" }}>
-      {/* Safe area superior cinza semi-transparente */}
-      <View style={{ paddingTop: insets.top, backgroundColor: "#ffffffaa" }} />
-
-      {/* Header real transparente, apenas padding e ícone */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          padding: 10,
-          backgroundColor: "transparent", // <- aqui era #ffffffaa
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Perfil")}>
-          <Image source={avatar} style={{ width: 30, height: 30 }} />
-        </TouchableOpacity>
+    <>
+      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
+      <View style={styles.header}>
+        <View style={{ margin: '2%', alignItems: 'flex-end' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+            <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
-
-// -----------------------------
-// DROPDOWN COM MODAL
-// -----------------------------
-function Dropdown({ label, selected, options, onSelect }) {
+// --- COMPONENTE DE DROPDOWN ESTILIZADO ---
+// Agora usa boxContainer, labelText e displayField para consistência visual
+function StyledDropdown({ label, value, options, onSelect }) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <View style={{ marginBottom: 18 }}>
+    <View style={styles.boxContainer}>
+      <Text style={styles.labelText}>{label}</Text>
       <TouchableOpacity
         onPress={() => setVisible(true)}
-        style={{
-          backgroundColor: "rgba(255,255,255,0.2)",
-          borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.4)",
-          padding: 12,
-          borderRadius: 12,
-        }}
+        style={styles.displayField}
       >
-        <Text style={{ color: "#fff" }}>{selected || label}</Text>
+        <Text style={styles.displayFieldText}>
+          {value ? value.name : "Selecione..."}
+        </Text>
       </TouchableOpacity>
 
-      <Modal visible={visible} transparent animationType="fade">
+      <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setVisible(false)}
+      >
         <TouchableOpacity
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.4)",
-            justifyContent: "center",
-            padding: 20,
-          }}
+          style={styles.modalCenteredView} // Reutiliza o estilo de centralização do modal
           activeOpacity={1}
           onPress={() => setVisible(false)}
         >
-          <View
-            style={{
-              backgroundColor: "#222",
-              padding: 20,
-              borderRadius: 12,
-            }}
-          >
-            {options.map((opt) => (
-              <TouchableOpacity
-                key={opt.id || opt}
-                onPress={() => {
-                  onSelect(opt.name || opt);
-                  setVisible(false);
-                }}
-                style={{ paddingVertical: 10 }}
-              >
-                <Text style={{ color: "white", fontSize: 16 }}>
-                  {opt.name || opt}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          <View style={[styles.modalContent, { maxHeight: '50%' }]}>
+            <Text style={styles.modalTitle}>{label}</Text>
+            <FlatList
+              data={options}
+              keyExtractor={(item) => item.id || item.name}
+              style={{ width: '100%' }}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalTagItem} // Reutiliza o estilo de item de lista do modal
+                  onPress={() => {
+                    onSelect(item);
+                    setVisible(false);
+                  }}
+                >
+                  <Text style={styles.modalTagText}>{item.name}</Text>
+                  {/* Check visual se estiver selecionado */}
+                  {value && value.id === item.id && (
+                     <Text style={styles.modalCheckMark}>✓</Text>
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+             <View style={[styles.modalButtonGroup, {marginTop: 15}]}>
+               <TouchableOpacity 
+                  style={[styles.modalButton, styles.modalCloseButton, {width: '100%'}]}
+                  onPress={() => setVisible(false)}
+                >
+                 <Text style={styles.modalTextStyle}>Cancelar</Text>
+               </TouchableOpacity>
+             </View>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -114,193 +160,262 @@ function Dropdown({ label, selected, options, onSelect }) {
   );
 }
 
-// -----------------------------
-// MOCK FIXO
-// -----------------------------
-const mockResults = [
-  { id: 1, title: "Mangá 1", cover: OnePieceCover },
-  { id: 2, title: "Mangá 2", cover: DemonSlayerCover },
-  { id: 3, title: "Mangá 3", cover: JujutsuKaisenCover },
-  { id: 4, title: "Mangá 4", cover: DragonBallCover },
-  { id: 5, title: "Mangá 5", cover: OnePieceCover },
-];
+// --- COMPONENTE MODAL DE TAGS ---
+function TagSelectionModal({
+  visible,
+  onClose,
+  onSave,
+  selectedTagIds,
+  setSelectedTagIds,
+  allTags,
+}) {
+  const toggleTag = (tagId) => {
+    const isSelected = selectedTagIds.includes(tagId);
 
-// Opções
-const availableTags = [
-  { id: "1", name: "Ação" }, { id: "2", name: "Aventura" }, { id: "3", name: "Comédia" },
-  { id: "4", name: "Drama" }, { id: "5", name: "Fantasia" }, { id: "6", name: "Ficção Científica" },
-  { id: "7", name: "Romance" }, { id: "8", name: "Suspense" }, { id: "9", name: "Terror" },
-];
+    if (isSelected) {
+      setSelectedTagIds((prevSelected) =>
+        prevSelected.filter((id) => id !== tagId)
+      );
+    } else if (selectedTagIds.length < MAX_SELECTION_LIMIT) {
+      setSelectedTagIds((prevSelected) =>
+        [...prevSelected, tagId]
+      );
+    }
+  };
 
-const releaseOptions = ["Mais recentes", "Mais antigos"];
-const popularityOptions = ["Mais populares", "Menos populares"];
-const alphabeticalOptions = ["A → Z", "Z → A", "Nenhum"];
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalCenteredView}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>
+            Selecione Gêneros ({selectedTagIds.length}/{MAX_SELECTION_LIMIT})
+          </Text>
 
-// -----------------------------
-// FILTER SCREEN
-// -----------------------------
+          <FlatList
+            data={allTags}
+            keyExtractor={(item) => item.id}
+            style={styles.modalListContainer}
+            contentContainerStyle={styles.modalListContent}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => {
+              const isSelected = selectedTagIds.includes(item.id);
+              // Se já atingiu o limite e este item não está selecionado, fica "desabilitado" visualmente
+              const limitReached = !isSelected && selectedTagIds.length >= MAX_SELECTION_LIMIT;
+
+              return (
+                <TouchableOpacity
+                  style={styles.modalTagItem}
+                  onPress={() => toggleTag(item.id)}
+                  activeOpacity={limitReached ? 0.5 : 0.2}
+                >
+                  <Text style={[
+                    styles.modalTagText, 
+                    limitReached && { color: 'rgba(255,255,255,0.4)' }
+                  ]}>
+                    {item.name}
+                  </Text>
+
+                  <View style={[
+                    styles.modalCheckbox,
+                    isSelected && styles.modalCheckboxSelected,
+                    limitReached && { borderColor: 'rgba(255,255,255,0.4)' }
+                  ]}>
+                    {isSelected && <Text style={styles.modalCheckMark}>✓</Text>}
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+
+          <View style={styles.modalButtonGroup}>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalCloseButton]}
+              onPress={onClose}
+            >
+              <Text style={styles.modalTextStyle}>Fechar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.modalSaveButton]}
+              onPress={onSave}
+            >
+              <Text style={styles.modalTextStyle}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+// --- TELA DE FILTROS ---
 export function FilterScreen({ navigation }) {
-  const insets = useSafeAreaInsets();
-
+  // Estados
   const [name, setName] = useState("");
-  const [tag, setTag] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
+  
   const [release, setRelease] = useState(null);
   const [popularity, setPopularity] = useState(null);
   const [alpha, setAlpha] = useState(null);
 
-  // Quando a tela volta, reseta tudo
+  // Resetar ao focar
   useFocusEffect(
     useCallback(() => {
       setName("");
-      setTag(null);
+      setSelectedTagIds([]);
       setRelease(null);
       setPopularity(null);
       setAlpha(null);
     }, [])
   );
 
-  return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={image}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-      />
+  // Helpers
+  const getSelectedTagNames = () => {
+    if (selectedTagIds.length === 0) return "Selecione até 4 tags";
+    const names = availableTags
+      .filter(tag => selectedTagIds.includes(tag.id))
+      .map(tag => tag.name);
+    return names.join(', ');
+  };
 
-      {/* HEADER FIXO E BONITO */}
+  return (
+    <View style={styles.wrapper}>
+      <ImageBackground source={image} style={styles.background} />
       <AppHeader navigation={navigation} />
 
-      <ScrollView style={{ flex: 1, padding: 20 }}>
-        <Text style={{ color: "white", marginBottom: 8, fontSize: 18 }}>
-          Nome
-        </Text>
+      <View style={styles.body}>
+        <View style={styles.container}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={[styles.screentitle, { marginBottom: 20, marginTop: 10 }]}>
+              Filtrar Pesquisa
+            </Text>
 
-        <TextInput
-          placeholder="Nome de um quadrinho"
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor="#ccc"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.2)",
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.4)",
-            color: "white",
-            padding: 12,
-            borderRadius: 12,
-            marginBottom: 20,
-          }}
-        />
+            {/* 1. Input Nome */}
+            <View style={styles.boxContainer}>
+              <Text style={styles.labelText}>Nome</Text>
+              <TextInput
+                style={styles.inputField}
+                placeholder="Nome do quadrinho"
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                value={name}
+                onChangeText={setName}
+              />
+            </View>
 
-        <Text style={{ color: "white", marginBottom: 8, fontSize: 18 }}>
-          Gênero (Tag)
-        </Text>
-        <Dropdown
-          label="Selecionar tags"
-          selected={tag}
-          options={availableTags}
-          onSelect={setTag}
-        />
+            {/* 2. Input Tags (Abre Modal) */}
+            <View style={styles.boxContainer}>
+              <Text style={styles.labelText}>Gênero (Tag)</Text>
+              <TouchableOpacity
+                style={styles.displayField}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={styles.displayFieldText} numberOfLines={1}>
+                  {getSelectedTagNames()}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        <Text style={{ color: "white", marginBottom: 8, fontSize: 18 }}>
-          Lançamento
-        </Text>
-        <Dropdown
-          label="Mais recentes"
-          selected={release}
-          options={releaseOptions}
-          onSelect={setRelease}
-        />
+            {/* Componente Modal Isolado */}
+            <TagSelectionModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              onSave={() => setModalVisible(false)}
+              selectedTagIds={selectedTagIds}
+              setSelectedTagIds={setSelectedTagIds}
+              allTags={availableTags}
+            />
 
-        <Text style={{ color: "white", marginBottom: 8, fontSize: 18 }}>
-          Popularidade
-        </Text>
-        <Dropdown
-          label="Mais populares"
-          selected={popularity}
-          options={popularityOptions}
-          onSelect={setPopularity}
-        />
+            {/* 3. Dropdowns Padronizados */}
+            <StyledDropdown 
+              label="Lançamento" 
+              value={release} 
+              options={releaseOptions} 
+              onSelect={setRelease} 
+            />
 
-        <Text style={{ color: "white", marginBottom: 8, fontSize: 18 }}>
-          Ordem alfabética
-        </Text>
-        <Dropdown
-          label="A → Z"
-          selected={alpha}
-          options={alphabeticalOptions}
-          onSelect={setAlpha}
-        />
+            <StyledDropdown 
+              label="Popularidade" 
+              value={popularity} 
+              options={popularityOptions} 
+              onSelect={setPopularity} 
+            />
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate("SearchResults")}
-          style={{
-            backgroundColor: "rgba(255,255,255,0.25)",
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.4)",
-            padding: 15,
-            borderRadius: 12,
-            marginTop: 20,
-          }}
-        >
-          <Text
-            style={{ color: "white", textAlign: "center", fontSize: 18 }}
-          >
-            Pesquisar
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <StyledDropdown 
+              label="Ordem alfabética" 
+              value={alpha} 
+              options={alphabeticalOptions} 
+              onSelect={setAlpha} 
+            />
+
+            {/* 4. Botão de Pesquisar */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SearchResults")}
+              style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
+            >
+              <Text style={styles.buttonText}>Pesquisar</Text>
+            </TouchableOpacity>
+
+          </ScrollView>
+        </View>
+      </View>
     </View>
   );
 }
 
-// -----------------------------
-// SEARCH RESULTS SCREEN
-// -----------------------------
+// --- TELA DE RESULTADOS ---
 export function SearchResultsScreen({ navigation }) {
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={image}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-      />
-
+    <View style={styles.wrapper}>
+      <ImageBackground source={image} style={styles.background} />
       <AppHeader navigation={navigation} />
 
-      <ScrollView style={{ flex: 1, padding: 20 }}>
-        <Text style={{ color: "white", fontSize: 24, marginBottom: 20 }}>
-          Resultados da pesquisa
-        </Text>
+      <View style={styles.body}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={[styles.screentitle, { marginVertical: 20 }]}>
+            Resultados da pesquisa
+          </Text>
 
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-          }}
-        >
-          {mockResults.map((item) => (
-            <View
-              key={item.id}
-              style={{
-                width: "48%",
-                backgroundColor: "rgba(255,255,255,0.1)",
-                padding: 10,
-                marginBottom: 20,
-                borderRadius: 12,
-              }}
-            >
-              <Image
-                source={item.cover}
-                style={{ width: "100%", height: 150, borderRadius: 10 }}
-              />
-              <Text
-                style={{ color: "white", marginTop: 10, textAlign: "center" }}
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+              paddingBottom: 20
+            }}
+          >
+            {mockResults.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={{
+                  width: '31.33%', // Grid de 3 colunas simples
+                  margin: '1%',
+                  borderRadius: 10,
+                  overflow: 'hidden',
+                  height: 160 // Altura fixa para consistência
+                }}
+                onPress={() => navigation.navigate('Quadrinho')}
               >
-                {item.title}
-              </Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+                <Image
+                  source={item.cover}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 }
+
+// Aplica os estilos globais
+const styles = mergeStyles({});

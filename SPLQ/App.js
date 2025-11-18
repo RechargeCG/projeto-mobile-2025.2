@@ -9,6 +9,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { FilterScreen, SearchResultsScreen } from "./Telas/Pesquisa";
 import FavoritosScreen from './Telas/Favoritos';
+import HistoricoScreen from './Telas/Historico';
 
 import GenericoScreen from './Telas/Generico';
 import PrincipalScreen from './Telas/Principal';
@@ -19,8 +20,7 @@ import LoginScreen from './Telas/Login';
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
 
-function PesquisaScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Busca</Text></View>; }
-function HistoricoScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Historico</Text></View>; }
+
 
 // function PerfilScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Perfil</Text></View>; }
 
@@ -75,7 +75,7 @@ function MainTabs() {
         })}
       />
 
-      <Tab.Screen name="Historico" component={GenericoScreen} options={{ title: 'Histórico'}} />
+      <Tab.Screen name="Historico" component={HistoricoScreen} options={{ title: 'Histórico'}} />
       <Tab.Screen name="Favoritos" component={FavoritosScreen} options={{ title: 'Favoritos'}} />
     </Tab.Navigator>
   );
@@ -91,7 +91,7 @@ function ConteudoNavegacao() {
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="Perfil" component={PerfilScreen} />
           <Stack.Screen name="Favoritos" component={FavoritosScreen} />
-
+          <Stack.Screen name="Historico" component={HistoricoScreen} />
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
 
           <Stack.Screen name="Capitulo" component={CapituloScreen} />
