@@ -313,13 +313,18 @@ export default function CapituloScreen() {
             
           ) : (
             // ========= PAGE MODE =========
-            <Image
-              source={{ uri: imagens[page] }}
-              style={{
-                width: '100%',
-                height: 600,
-                resizeMode: 'cover'
-              }}
+            // <Image
+            //   source={{ uri: imagens[page] }}
+            //   style={{
+            //     width: '100%',
+            //     height: 600,
+            //     resizeMode: 'cover'
+            //   }}
+            // />
+            <ProportionalImageItem 
+              uri={imagens[page]} 
+              // key={idx} 
+              // Não adicione Hooks aqui!
             />
           )}
         </View>
@@ -363,17 +368,27 @@ export default function CapituloScreen() {
           <Text style={styles.sectiontitle}>Comentários</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <View style={styles.boxContainer}>
-              <Text style={styles.labelText}>Comentar</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder="Digite seu comentário..."
-                placeholderTextColor="rgba(255,255,255,0.7)"
-                value={name}
-                onChangeText={setName}
-              />
+              <View style={[styles.expandableBoxField,{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <View style={{flex: 1, flexDirection: 'columm', justifyContent: 'left'}}>
+                    <TextInput
+                      style={{color: 'white',}}
+                      // style={[styles.expandableBoxText,{marginLeft: 10, maxWidth: '80%'}]} 
+                      multiline={true}
+                      placeholder="Digite seu comentário..."
+                      placeholderTextColor="rgba(255,255,255,0.7)"
+                      value={name}
+                      onChangeText={setName}
+                    />
+                  </View>
+                  <TouchableOpacity style={{marginLeft: 20}}>
+                    <Icon name={'send'} size={20} color={'white'}/>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
 
-            <View style={{height: 2, backgroundColor: 'white', borderRadius: 5, marginVertical: 10}}></View>
+            <View style={{height: 2, backgroundColor: 'white', borderRadius: 5, marginVertical: 10}}/>
 
             {todoscomentarios.map((item, index) => {
               const canBeExpanded = item.text.length > 100; 
@@ -390,10 +405,12 @@ export default function CapituloScreen() {
                 >
                   <View style={[styles.expandableBoxField,{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
                     <View style={{flex: 1, flexDirection: 'columm', alignItems: 'left', justifyContent: 'space-between', width: '100%'}}>
-                      <View style={{flex: 1, flexDirection: 'row', alignItems: 'left', backgroundColor: 'red', width: '100%'}}>
-                        <Image source={require('../assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover', marginRight: 5 }} />
-                        <Text style={[styles.expandableBoxText]} numberOfLines={1} >Nome do usuário aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
-                      </View>
+                      <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+                        <View style={{flex: 1, flexDirection: 'row', alignItems: 'left', width: '100%'}}>
+                          <Image source={require('../assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
+                          <Text style={[styles.expandableBoxText,{marginLeft: 10, maxWidth: '80%'}]} numberOfLines={1} >Nome do usuário aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
+                        </View>
+                      </TouchableOpacity>
                       <Text 
                         style={styles.expandableBoxText}
                         numberOfLines={isTextExpanded ? undefined : 4} 
