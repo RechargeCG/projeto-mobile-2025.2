@@ -75,7 +75,7 @@ function MainTabs() {
         })}
       />
 
-      <Tab.Screen name="Historico" component={GenericoScreen} options={{ title: 'Histórico'}} />
+      <Tab.Screen name="Historico" component={HistoricoScreen} options={{ title: 'Histórico'}} />
       <Tab.Screen name="Favoritos" component={FavoritosScreen} options={{ title: 'Favoritos'}} />
     </Tab.Navigator>
   );
