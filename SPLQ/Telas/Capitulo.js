@@ -2,7 +2,6 @@ import {
   StyleSheet, Text, TextInput, View, ImageBackground, Modal, 
   FlatList, ScrollView, Image, KeyboardAvoidingView, Platform, TouchableOpacity, Dimensions
 } from 'react-native';
-import NestedScrollView from 'react-native-nested-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -117,7 +116,7 @@ export default function CapituloScreen() {
       </View>
 
       {/* CONTEÚDO */}
-      <NestedScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={{margin: '5%'}}>
           {/* CONTROLE DO CAPÍTULO */}
           <View style={styles.changeChapter}>
@@ -348,7 +347,7 @@ export default function CapituloScreen() {
           </KeyboardAvoidingView>
         </View>
 
-      </NestedScrollView>
+      </ScrollView>
 
       <View style={{ paddingBottom: insets.bottom, backgroundColor: '#ffffffff', position: 'absolute', bottom: 0, left: 0, right: 0 }} />
 

@@ -24,7 +24,6 @@
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-keyboard-controller": "^1.18.5",
-    "react-native-nested-scroll-view": "^9.0.0",
     "react-native-paper": "4.9.2",
     "react-native-reanimated": "~4.1.1",
     "react-native-reanimated-carousel": "^4.0.3",
