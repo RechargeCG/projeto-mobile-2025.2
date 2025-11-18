@@ -1,15 +1,55 @@
 import { 
   StyleSheet, Text, TextInput, View, ImageBackground, Modal, 
-  FlatList, ScrollView, Image, KeyboardAvoidingView, Platform, TouchableOpacity 
+  FlatList, ScrollView, Image, KeyboardAvoidingView, Platform, TouchableOpacity, Dimensions
 } from 'react-native';
+import NestedScrollView from 'react-native-nested-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { chapters } from '../assets/chapters';
-
 const image = require('../assets/background.png');
+
+const { width: screenWidth } = Dimensions.get('window');
+const totalPaddingHorizontal = 0; 
+const imageContainerWidth = screenWidth - totalPaddingHorizontal;
+
+const ProportionalImageItem = ({ uri }) => {
+  // HOOKS NO NÍVEL SUPERIOR DO COMPONENTE ProportionalImageItem (CORRETO)
+  const [aspectRatio, setAspectRatio] = useState(1); 
+
+  useEffect(() => {
+    Image.getSize(
+      uri,
+      (width, height) => {
+        setAspectRatio(width / height);
+      },
+      (error) => {
+        console.warn('Erro ao obter o tamanho da imagem:', error);
+      }
+    );
+  }, [uri]);
+
+  return (
+    <View 
+      style={{
+        width: imageContainerWidth,
+        marginBottom: 10,
+      }} 
+    >
+      <Image
+        source={{ uri }}
+        style={{
+          width: '100%',
+          aspectRatio: aspectRatio, 
+          backgroundColor: 'red', 
+          resizeMode: 'contain', 
+        }}
+      />
+    </View>
+  );
+};
 
 const todoscapitulos = [
   { id: '0', name: '0' },
@@ -36,7 +76,7 @@ export default function CapituloScreen() {
   const [modalPaginaVisible, setModalPaginaVisible] = useState(false);
   const [capitulo, setCapitulo] = useState(2);
   const [allPages, setAllPages] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [name, setName] = useState('');
   const [imagens, setImagens] = useState([]);
 
@@ -58,8 +98,8 @@ export default function CapituloScreen() {
     setPage(0);
   }, [capitulo]);
 
-  return (
-    <View style={styles.wrapper}>
+  return(
+    <View style={[styles.wrapper,{paddingBottom: '10%'}]}>
       
       <ImageBackground source={image} style={styles.background} />
 
@@ -77,7 +117,7 @@ export default function CapituloScreen() {
       </View>
 
       {/* CONTEÚDO */}
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <NestedScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={{margin: '5%'}}>
           {/* CONTROLE DO CAPÍTULO */}
           <View style={styles.changeChapter}>
@@ -146,9 +186,9 @@ export default function CapituloScreen() {
           {/* CONTROLE DE PÁGINA */}
           <View style={styles.changeChapter}>
             <TouchableOpacity
-              style={[styles.arrowButton, page <= 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
-              onPress={() => page > 1 && setPage(page - 1)}
-              disabled={page <= 1 || allPages}
+              style={[styles.arrowButton, page <= 0 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
+              onPress={() => page > 0 && setPage(page - 1)}
+              disabled={page <= 0 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '90deg' }] }]} />
@@ -157,7 +197,7 @@ export default function CapituloScreen() {
             {!allPages &&
               <View style={styles.boxContainer}>
                 <TouchableOpacity style={[styles.capituloButton,{width: 'auto',margin: 0,padding: 0 }]} onPress={() => setModalPaginaVisible(true)}>
-                  <Text style={styles.capituloText}>{page}</Text>
+                  <Text style={styles.capituloText}>{page+1}</Text>
                 </TouchableOpacity>
               </View>
             }
@@ -213,6 +253,21 @@ export default function CapituloScreen() {
           </View>
         </View>
 
+        {
+        /* Colocar no lugar da visualização de página inteira
+            <FlatList
+              data={imagens}
+              renderItem={renderImageItem}
+              keyExtractor={(item, index) => index.toString()}
+            />
+
+
+            <View style={styles.footer}>
+              <Text>Conteúdo Abaixo da Lista</Text>
+            </View>
+        */
+        }
+
         {/* VIEWER */}
         <View style={{ flex: 1, backgroundColor: '#000' }}>
           {imagens.length === 0 ? (
@@ -221,19 +276,15 @@ export default function CapituloScreen() {
             // ========= WEBTOON MODE =========
             <View>
               {imagens.map((uri, idx) => (
-                <Image
-                  key={idx}
-                  source={{ uri }}
-                  style={{
-                    width: '100%',
-                    height: undefined,
-                    resizeMode: 'contain',
-                    aspectRatio: 1,
-                    marginBottom: 4
-                  }}
+                // Chama o componente ProportionalImageItem, que gerencia seu próprio estado
+                <ProportionalImageItem 
+                  uri={uri} 
+                  key={idx} 
+                  // Não adicione Hooks aqui!
                 />
               ))}
             </View>
+            
           ) : (
             // ========= PAGE MODE =========
             <Image
@@ -250,9 +301,9 @@ export default function CapituloScreen() {
           {/* CONTROLE DE PÁGINA (duplicado) */}
           <View style={styles.changeChapter}>
             <TouchableOpacity
-              style={[styles.arrowButton, page <= 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
-              onPress={() => page > 1 && setPage(page - 1)}
-              disabled={page <= 1 || allPages}
+              style={[styles.arrowButton, page <= 0 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
+              onPress={() => page > 0 && setPage(page - 1)}
+              disabled={page <= 0 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '90deg' }] }]} />
@@ -261,7 +312,7 @@ export default function CapituloScreen() {
             {!allPages &&
               <View style={styles.boxContainer}>
                 <TouchableOpacity style={[styles.capituloButton,{width: 'auto',margin: 0,padding: 0 }]} onPress={() => setModalPaginaVisible(true)}>
-                  <Text style={styles.capituloText}>{page}</Text>
+                  <Text style={styles.capituloText}>{page+1}</Text>
                 </TouchableOpacity>
               </View>
             }
@@ -297,7 +348,7 @@ export default function CapituloScreen() {
           </KeyboardAvoidingView>
         </View>
 
-      </ScrollView>
+      </NestedScrollView>
 
       <View style={{ paddingBottom: insets.bottom, backgroundColor: '#ffffffff', position: 'absolute', bottom: 0, left: 0, right: 0 }} />
 
