@@ -34,9 +34,9 @@ export default function CapituloScreen() {
 
   const [modalCapituloVisible, setModalCapituloVisible] = useState(false);
   const [modalPaginaVisible, setModalPaginaVisible] = useState(false);
-  const [capitulo, setCapitulo] = useState(0);
+  const [capitulo, setCapitulo] = useState(2);
   const [allPages, setAllPages] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [name, setName] = useState('');
   const [imagens, setImagens] = useState([]);
 
@@ -77,7 +77,7 @@ export default function CapituloScreen() {
       </View>
 
       {/* CONTEÚDO */}
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingBottom: insets.bottom }}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={{margin: '5%'}}>
           {/* CONTROLE DO CAPÍTULO */}
           <View style={styles.changeChapter}>
@@ -146,20 +146,21 @@ export default function CapituloScreen() {
           {/* CONTROLE DE PÁGINA */}
           <View style={styles.changeChapter}>
             <TouchableOpacity
-              style={[styles.arrowButton, page === 0 && styles.arrowDisabled, { opacity: allPages ? 1 : 0 }]}
-              onPress={() => page > 0 && setPage(page - 1)}
-              disabled={page === 0 || !allPages}
+              style={[styles.arrowButton, page <= 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
+              onPress={() => page > 1 && setPage(page - 1)}
+              disabled={page <= 1 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '90deg' }] }]} />
             </TouchableOpacity>
-
-            <View style={styles.boxContainer}>
-              <TouchableOpacity style={[styles.capituloButton,{width: 'auto',margin: 0,padding: 0 }]} onPress={() => setModalPaginaVisible(true)}>
-                <Text style={styles.capituloText}>{page}</Text>
-                {/* <Image source={require('../assets/arrow.png')} style={styles.capituloArrow} /> */}
-              </TouchableOpacity>
-            </View>
+            
+            {!allPages &&
+              <View style={styles.boxContainer}>
+                <TouchableOpacity style={[styles.capituloButton,{width: 'auto',margin: 0,padding: 0 }]} onPress={() => setModalPaginaVisible(true)}>
+                  <Text style={styles.capituloText}>{page}</Text>
+                </TouchableOpacity>
+              </View>
+            }
             
             {/* MODAL DE PÁGINAS */}
             <Modal animationType="slide" transparent visible={modalPaginaVisible}>
@@ -168,19 +169,19 @@ export default function CapituloScreen() {
                   <Text style={styles.modalTitle}>Selecione uma página</Text>
 
                   <FlatList
-                    data={totalPaginas}
-                    keyExtractor={i => i.id}
+                    data={Array.from({ length: totalPaginas }, (_, index) => index + 1)} // Gera um array de números
+                    keyExtractor={item => item.toString()} // Usamos o número como chave
                     style={styles.modalListContainer}
                     contentContainerStyle={styles.modalListContent}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={styles.modalTagItem}
                         onPress={() => {
-                          setPagina(Number(item.id));
+                          setPage(item-1); // Definindo a página com o número
                           setModalPaginaVisible(false);
                         }}
                       >
-                        <Text style={styles.modalTagText}>Página {item.name}</Text>
+                        <Text style={styles.modalTagText}>Página {item}</Text>
                       </TouchableOpacity>
                     )}
                   />
@@ -202,9 +203,9 @@ export default function CapituloScreen() {
             </View>
 
             <TouchableOpacity
-              style={[styles.arrowButton, page === totalPaginas - 1 && styles.arrowDisabled, { opacity: allPages ? 1 : 0 }]}
+              style={[styles.arrowButton, page >= totalPaginas - 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
               onPress={() => page < totalPaginas - 1 && setPage(page + 1)}
-              disabled={page === totalPaginas - 1 || !allPages}
+              disabled={page >= totalPaginas - 1 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '270deg' }] }]} />
@@ -215,8 +216,8 @@ export default function CapituloScreen() {
         {/* VIEWER */}
         <View style={{ flex: 1, backgroundColor: '#000' }}>
           {imagens.length === 0 ? (
-            <Text style={{ color: '#fff' }}>Carregando...</Text>
-          ) : !allPages ? (
+            <Text style={{ color: '#fff', flex: 1, alignSelf: 'center' }}>Carregando...</Text>
+          ) : allPages ? (
             // ========= WEBTOON MODE =========
             <View>
               {imagens.map((uri, idx) => (
@@ -249,13 +250,21 @@ export default function CapituloScreen() {
           {/* CONTROLE DE PÁGINA (duplicado) */}
           <View style={styles.changeChapter}>
             <TouchableOpacity
-              style={[styles.arrowButton, page === 0 && styles.arrowDisabled, { opacity: allPages ? 1 : 0 }]}
-              onPress={() => page > 0 && setPage(page - 1)}
-              disabled={page === 0 || !allPages}
+              style={[styles.arrowButton, page <= 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
+              onPress={() => page > 1 && setPage(page - 1)}
+              disabled={page <= 1 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '90deg' }] }]} />
             </TouchableOpacity>
+
+            {!allPages &&
+              <View style={styles.boxContainer}>
+                <TouchableOpacity style={[styles.capituloButton,{width: 'auto',margin: 0,padding: 0 }]} onPress={() => setModalPaginaVisible(true)}>
+                  <Text style={styles.capituloText}>{page}</Text>
+                </TouchableOpacity>
+              </View>
+            }
 
             <View style={styles.boxContainer}>
               <TouchableOpacity style={[styles.capituloButton, { width: '100%' }]} onPress={() => setAllPages(!allPages)}>
@@ -264,9 +273,9 @@ export default function CapituloScreen() {
             </View>
 
             <TouchableOpacity
-              style={[styles.arrowButton, page === totalPaginas - 1 && styles.arrowDisabled, { opacity: allPages ? 1 : 0 }]}
+              style={[styles.arrowButton, page >= totalPaginas - 1 && styles.arrowDisabled, { opacity: !allPages ? 1 : 0 }]}
               onPress={() => page < totalPaginas - 1 && setPage(page + 1)}
-              disabled={page === totalPaginas - 1 || !allPages}
+              disabled={page >= totalPaginas - 1 || allPages}
             >
               <Image source={require('../assets/arrow.png')}
                 style={[styles.arrowIcon, { transform: [{ rotate: '270deg' }] }]} />
@@ -296,7 +305,6 @@ export default function CapituloScreen() {
   );
 }
 
-/* -------------------------------- STYLES MANTIDOS ------------------------------- */
 const LocalStyles = {
   header: {
     flexDirection: 'row',

@@ -23,7 +23,7 @@ export default function QuadrinhoScreen({  }) {
       </View>
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.body}>
-          <TouchableOpacity onPress={() => navigation.navigate('CapituloScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Capitulo')}>
             <Text style={styles.labelText}> Ir para tela de capítulo </Text>
           </TouchableOpacity>
         </View>
