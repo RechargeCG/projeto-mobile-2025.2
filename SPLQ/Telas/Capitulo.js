@@ -360,6 +360,7 @@ export default function CapituloScreen() {
           </View>
 
           {/* INPUT NOME (com KeyboardAvoiding) */}
+          <Text style={styles.sectiontitle}>Comentários</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <View style={styles.boxContainer}>
               <Text style={styles.labelText}>Comentar</Text>
@@ -371,6 +372,9 @@ export default function CapituloScreen() {
                 onChangeText={setName}
               />
             </View>
+
+            <View style={{height: 2, backgroundColor: 'white', borderRadius: 5, marginVertical: 10}}></View>
+
             {todoscomentarios.map((item, index) => {
               const canBeExpanded = item.text.length > 100; 
               const isTextExpanded = expandedStates[item.id] || false;
@@ -380,26 +384,37 @@ export default function CapituloScreen() {
                   key={item.id}
                   style={[
                     styles.expandableBoxContainer, 
-                    index > 0 && { marginTop: 10 }
+                    index > 0 && { marginTop: 10 },
+                    // {flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}
                   ]}
                 >
-                  <View style={styles.expandableBoxField}>
-                    <Text 
-                      style={styles.expandableBoxText}
-                      numberOfLines={isTextExpanded ? undefined : 4} 
-                    >
-                      {item.text}
-                    </Text>
-                    
-                    <TouchableOpacity
-                      onPress={() => canBeExpanded ? toggleExpand(item.id) : 0} 
-                      style={styles.expandableButton}
-                    >
-                      {canBeExpanded && 
-                        <Text style={styles.expandableButtonText}>
-                          {isTextExpanded ? '... Ler Menos' : '... Ler Mais'}
-                        </Text>
-                      }
+                  <View style={[styles.expandableBoxField,{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+                    <View style={{flex: 1, flexDirection: 'columm', alignItems: 'left', justifyContent: 'space-between', width: '100%'}}>
+                      <View style={{flex: 1, flexDirection: 'row', alignItems: 'left', backgroundColor: 'red', width: '100%'}}>
+                        <Image source={require('../assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover', marginRight: 5 }} />
+                        <Text style={[styles.expandableBoxText]} numberOfLines={1} >Nome do usuário aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
+                      </View>
+                      <Text 
+                        style={styles.expandableBoxText}
+                        numberOfLines={isTextExpanded ? undefined : 4} 
+                      >
+                        {item.text}
+                      </Text>
+                      
+                        
+                      <TouchableOpacity
+                        onPress={() => canBeExpanded ? toggleExpand(item.id) : 0} 
+                        style={styles.expandableButton}
+                      >
+                        {canBeExpanded && 
+                          <Text style={styles.expandableButtonText}>
+                            {isTextExpanded ? '... Ler Menos' : '... Ler Mais'}
+                          </Text>
+                        }
+                      </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity>
+                      <Icon name={'trash'} size={45} color={'white'}/>
                     </TouchableOpacity>
                   </View>
                 </View>
