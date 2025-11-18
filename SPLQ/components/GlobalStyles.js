@@ -251,6 +251,7 @@ export const GlobalStyles = {
     fontSize: 15,
     paddingTop: 5,
     paddingBottom: 5,
+    textAlign: 'justify',
   },
   expandableButton: {
     marginTop: 5,
