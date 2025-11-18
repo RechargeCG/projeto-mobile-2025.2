@@ -84,14 +84,6 @@ function MainTabs() {
 function ConteudoNavegacao() {
   const { logado } = useContext(AppContext); // Agora funciona
 
-  if (!logado) {
-    return (
-      <SafeAreaProvider>
-        <LoginScreen />
-      </SafeAreaProvider>
-    );
-  }
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
