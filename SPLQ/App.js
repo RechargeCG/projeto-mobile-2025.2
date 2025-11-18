@@ -84,14 +84,6 @@ function MainTabs() {
 function ConteudoNavegacao() {
   const { logado } = useContext(AppContext); // Agora funciona
 
-  if (!logado) {
-    return (
-      <SafeAreaProvider>
-        <LoginScreen />
-      </SafeAreaProvider>
-    );
-  }
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
@@ -102,7 +94,6 @@ function ConteudoNavegacao() {
 
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
 
-          <Stack.Screen name="Perfil" component={CapituloScreen} />
           <Stack.Screen name="Capitulo" component={CapituloScreen} />
           <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
         </Stack.Navigator>

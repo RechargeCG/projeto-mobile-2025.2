@@ -24,9 +24,6 @@ export default function LoginScreen({ navigation }) {
 
   const [cadastro, setCadastro] = useState(false);
 
-  if (cadastro)
-    return (<CadastroScreen/>);
-
   return (
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
@@ -54,7 +51,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: '10px'}} onPress={setCadastro(true)}>
+        <TouchableOpacity style={{marginTop: '10px'}} onPress={null}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>
