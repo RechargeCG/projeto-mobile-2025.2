@@ -8,6 +8,11 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { FilterScreen, SearchResultsScreen } from "./Telas/Pesquisa";
+import CadastrarCapituloScreen from './Telas/CadastarCapitulo';
+import CadastrarObraScreen from './Telas/CadastrarObra';
+import EditarCapituloScreen from './Telas/EditarCapitulo';
+import EditarObraScreen from './Telas/EditarObra';
+
 import FavoritosScreen from './Telas/Favoritos';
 import HistoricoScreen from './Telas/Historico';
 
@@ -17,14 +22,13 @@ import PerfilScreen from './Telas/Perfil';
 import CapituloScreen from './Telas/Capitulo';
 import QuadrinhoScreen from './Telas/Quadrinho';
 import LoginScreen from './Telas/Login';
+import CadastroScreen from './Telas/Cadastro'; // ADICIONADO: Import do CadastroScreen
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
 import PerfilEdicaoScreen from './Telas/PerfilEdicao';
 import CadastroScreen from './Telas/Cadastro';
 
 
-
-// function PerfilScreen() { return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Perfil</Text></View>; }
 
 const PesquisaStack = createStackNavigator();
 
@@ -42,16 +46,11 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
-  // const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       initialRouteName="Inicio"
       screenOptions={({ route }) => ({
         headerShown: false, 
-        tabBarStyle: { 
-          // marginBottom: insets.bottom,
-          // backgroundColor: 'red'
-        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = '';
           if (route.name === 'Inicio') iconName = focused ? 'home' : 'home-outline';
@@ -71,7 +70,6 @@ function MainTabs() {
         options={{ title: 'Pesquisa' }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            // evita comportamento padrão se quiser forçar sempre ir para FilterScreen
             navigation.navigate('Pesquisa', { screen: 'FilterScreen' });
           },
         })}

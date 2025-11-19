@@ -44,30 +44,12 @@ const mockFavorites = [
   { id: 20, title: "Mangá 20", cover: DragonBallCover },
 ];
 
-// Configuração do Grid
-const NUM_COLUMNS = 3;
 
-// Função utilitária para quebrar o array em linhas (igual ao Generico.js)
-const chunkArray = (arr, size) => {
-  const chunkedArr = [];
-  for (let i = 0; i < arr.length; i += size) {
-    chunkedArr.push(arr.slice(i, i + size));
-  }
-  return chunkedArr;
-};
 
-export default function FavoritosScreen({ navigation }) {
+function AppHeader({ navigation }) {
   const insets = useSafeAreaInsets();
-  const styles = mergeStyles({}); // Carrega os estilos globais
-  
-  // Prepara os dados em linhas de 3 colunas
-  const chunkedFavorites = chunkArray(mockFavorites, NUM_COLUMNS);
-
   return (
-    <View style={styles.wrapper}>
-      <ImageBackground source={image} style={styles.background} />
-
-      {/* --- HEADER PADRONIZADO --- */}
+    <>
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
       <View style={styles.header}>
         <View style={{ margin: '2%', alignItems: 'flex-end' }}>
@@ -76,54 +58,62 @@ export default function FavoritosScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
+    </>
+  );
+}
 
-      {/* --- CORPO DA TELA --- */}
-      <View style={styles.body}>
-        <View style={styles.container}>
+
+export default function FavoritosScreen({ navigation }) {
+
+  const styles = mergeStyles({}); 
+  
+
+  return (
+      <View style={styles.wrapper}>
+        <ImageBackground source={image} style={styles.background} />
+        <AppHeader navigation={navigation} />
+  
+        <View style={styles.body}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            
-            <Text style={[styles.screentitle, { marginTop: 15, marginBottom: 15 }]}>
+            <Text style={[styles.screentitle, { marginVertical: 20 }]}>
               Favoritos
             </Text>
-
-            {/* --- GRID SYSTEM (Baseado no Generico.js) --- */}
-            <View style={styles.listContainerGrid}>
-              {chunkedFavorites.map((row, rowIndex) => (
-                <View 
-                  key={rowIndex}
-                  style={{ 
-                    flexDirection: 'row', 
-                    justifyContent: 'flex-start',
-                    // marginBottom não é necessário aqui se o gridItemWrapper já tiver margin
+  
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-start',
+                paddingBottom: 20
+              }}
+            >
+              {mockFavorites.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={{
+                    width: '31.33%', // Grid de 3 colunas simples
+                    margin: '1%',
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                    height: 160 // Altura fixa para consistência
                   }}
+                  onPress={() => navigation.navigate('Quadrinho')}
                 >
-                  {row.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      style={styles.gridItemWrapper} // Usa estilo global (33% width aprox)
-                      onPress={() => navigation.navigate('Quadrinho')}
-                    >
-                      <Image
-                        source={item.cover}
-                        style={[styles.listGridImage, { maxHeight: '100%' }]}
-                        resizeMode="cover"
-                      />
-                    </TouchableOpacity>
-                  ))}
-                  
-                  {/* Preenchimento de espaços vazios para manter alinhamento à esquerda */}
-                  {rowIndex === chunkedFavorites.length - 1 && row.length < NUM_COLUMNS && 
-                    [...Array(NUM_COLUMNS - row.length)].map((_, emptyIndex) => (
-                      <View key={`empty-${emptyIndex}`} style={styles.gridItemWrapper} />
-                    ))
-                  }
-                </View>
+                  <Image
+                    source={item.cover}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
               ))}
             </View>
-
           </ScrollView>
         </View>
       </View>
-    </View>
-  );
+    );
 }
+
+const styles = mergeStyles({});
