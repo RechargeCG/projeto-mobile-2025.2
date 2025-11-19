@@ -20,7 +20,7 @@ export default function PerfilEdicaoScreen({  }) {
           <Icon name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Perfil')} style={{margin: '2%'}}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{margin: '2%'}}>
           <Image source={require('../assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
         </TouchableOpacity>
       </View>
@@ -51,7 +51,7 @@ export default function PerfilEdicaoScreen({  }) {
                 placeholderTextColor={'white'}
               ></TextInput>
 
-              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20, marginBottom: 10}} onPress={() => navigation.navigate("Perfil")}>
+              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20, marginBottom: 10}} onPress={() => {navigation.goBack()} }>
                 <Text style={styles.buttonText}>Salvar Alterações</Text>
               </TouchableOpacity>
 
