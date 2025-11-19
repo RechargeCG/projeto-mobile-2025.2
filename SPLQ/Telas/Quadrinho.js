@@ -78,7 +78,7 @@ const availableTags = [
   { id: '2', name: 'Aventura' },
   { id: '3', name: 'Comédia' },
   { id: '4', name: 'Drama' },
-  { id: '5', name: 'Fantasia' },
+  // { id: '5', name: 'Fantasia' },
   // { id: '6', name: 'Ficção Científica' },
   // { id: '7', name: 'Romance' },
   // { id: '8', name: 'Suspense' },
