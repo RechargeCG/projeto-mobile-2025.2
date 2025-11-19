@@ -104,7 +104,7 @@ export default function CadastrarObraScreen({ navigation }) {
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             
-            <Text style={[styles.screentitle, { marginBottom: 20 }]}>Cadastrar Obra Obra</Text>
+            <Text style={[styles.screentitle, { marginBottom: 20 }]}>Cadastrar Obra</Text>
 
             
             <TouchableOpacity 
