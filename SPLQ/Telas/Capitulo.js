@@ -125,7 +125,7 @@ export default function CapituloScreen() {
   }, [capitulo]);
 
   return(
-    <View style={[styles.wrapper,{paddingBottom: '10%'}]}>
+    <View style={[styles.wrapper,{marginBottom: insets.bottom}]}>
       
       <ImageBackground source={image} style={styles.background} />
 
@@ -442,7 +442,7 @@ export default function CapituloScreen() {
 
       </ScrollView>
 
-      <View style={{ paddingBottom: insets.bottom, backgroundColor: '#ffffffff', position: 'absolute', bottom: 0, left: 0, right: 0 }} />
+      {/* <View style={{ paddingBottom: insets.bottom, backgroundColor: '#ffffffaa', position: 'absolute', bottom: 0, left: 0, right: 0 }} /> */}
 
     </View>
   );

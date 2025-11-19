@@ -115,7 +115,7 @@ export default function PrincipalScreen({ navigation }) {
       </View>
       <View style={styles.body}>
         <View style={styles.container}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.screentitle}>Destaques</Text>
             <View style={styles.coverBox}>
               <DestaqueList navigation={navigation}/>

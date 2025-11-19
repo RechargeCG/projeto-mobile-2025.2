@@ -2,17 +2,21 @@ import { Text, View, ImageBackground, TouchableOpacity, TextInput, Platform, Key
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react'; // REMOVIDO useEffect e useContext (não usados)
 import { mergeStyles } from '../components/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
 // REMOVIDO: import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
 
-export default function CadastroScreen({ navigation }) {
+export default function CadastroScreen({  }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [dataNasc, setDataNasc] = useState('');
 
   // REMOVIDO: const { logado } = useContext(AppContext);
+
+  const navigation = useNavigation();
+
   // REMOVIDO: lógica de useEffect para dataNasc
 
   const handleDataNascChange = (text) => {
@@ -29,12 +33,11 @@ export default function CadastroScreen({ navigation }) {
     setDataNasc(formattedText);
   };
 
-
   const fazerCadastro = () => {
     // Adicionada validação de tamanho para a data
     if (nome && email && senha && dataNasc.length === 10) { 
       alert('Cadastro Realizado.');
-      navigation.navigate('Login'); // AÇÃO: Navega para a tela de Login
+      navigation.goBack();
     }
     else {
       alert("Preencha os campos corretamente! (Data no formato DD/MM/AAAA)");
@@ -50,6 +53,7 @@ export default function CadastroScreen({ navigation }) {
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
+          <Text style={styles.labelText}>Nome de usuário</Text>
           <TextInput
               style={styles.inputField}
               placeholder='Nome de usuário'
@@ -59,6 +63,7 @@ export default function CadastroScreen({ navigation }) {
           />
         </View>
         <View style={[styles.boxContainer, { marginTop: 10 }]}> 
+          <Text style={styles.labelText}>E-mail</Text>
           <TextInput
               style={styles.inputField}
               placeholder='E-mail'
@@ -68,6 +73,7 @@ export default function CadastroScreen({ navigation }) {
           />
         </View>
         <View style={[styles.boxContainer, { marginTop: 10 }]}> 
+          <Text style={styles.labelText}>Senha</Text>
           <TextInput
               style={styles.inputField}
               placeholder='Senha'
@@ -78,6 +84,7 @@ export default function CadastroScreen({ navigation }) {
           />
         </View>
         <View style={[styles.boxContainer, { marginTop: 10 }]}> 
+          <Text style={styles.labelText}>Data de nascimento</Text>
           <TextInput
               style={styles.inputField}
               placeholder='DD/MM/AAAA'
@@ -91,7 +98,7 @@ export default function CadastroScreen({ navigation }) {
         <TouchableOpacity style={[styles.buttonContainer, { marginTop: 20 }]} onPress={fazerCadastro}>
             <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: 10}} onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={{marginTop: '10px'}} onPress={() => navigation.goBack()}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Já tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Faça login agora!</Text>
         </TouchableOpacity>
