@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { AppContext } from '../components/ContextoLogin';
-import CadastroScreen from './Cadastro';
+// REMOVIDO: import CadastroScreen from './Cadastro'; // Não é necessário aqui
 
 const image = require('../assets/background.png');
 
@@ -15,43 +15,46 @@ export default function LoginScreen({ navigation }) {
 
   const fazerLogin = () => {
     if (email != '' && senha != '') {
-      setLogado(true);
+      setLogado(true); // Isso é correto e aciona a navegação em App.js
     }
     else {
       alert("Preencha os campos corretamente!");
     }
   }
 
-  const [cadastro, setCadastro] = useState(false);
+  // REMOVIDO: const [cadastro, setCadastro] = useState(false); // Estado não utilizado
+
+  const insets = useSafeAreaInsets();
+  const styles = mergeStyles({})
 
   return (
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
-      <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
+      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
           <TextInput
               style={styles.inputField}
               placeholder='E-mail'
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              placeholderTextColor="rgba(255, 255, 255, 0.4)"
               value={email}
               onChangeText={setEmail}
           />
         </View>
-        <View style={styles.boxContainer}>
+        <View style={[styles.boxContainer, { marginTop: 10 }]}> 
           <TextInput
-              style={{...styles.inputField, marginTop: '10px'}}
+              style={styles.inputField}
               placeholder='Senha'
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              placeholderTextColor="rgba(255, 255, 255, 0.4)"
               value={senha}
               secureTextEntry={true}
               onChangeText={setSenha}
           />
         </View>
-        <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerLogin}>
+        <TouchableOpacity style={[styles.buttonContainer, { marginTop: 20 }]} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: '10px'}} onPress={null}>
+        <TouchableOpacity style={{marginTop: 10}} onPress={() => navigation.navigate('Cadastro')}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>
@@ -59,5 +62,3 @@ export default function LoginScreen({ navigation }) {
     </View>
   );
 }
-
-const styles = mergeStyles({})
