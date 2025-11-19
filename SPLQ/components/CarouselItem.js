@@ -24,13 +24,14 @@
     image: {
       width: '100%',
       height: '80%',
+      borderStyle: 'solid',
       resizeMode: 'contain',
-      borderRadius: 8,
+      borderRadius: 10,
     },
     title: {
       fontSize: 18,
       fontWeight: 'bold',
-      marginTop: 10,
+      marginTop: 2,
       color: 'white',
       textAlign: 'center'
     },
