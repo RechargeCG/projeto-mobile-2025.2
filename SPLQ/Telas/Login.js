@@ -3,19 +3,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { AppContext } from '../components/ContextoLogin';
-// REMOVIDO: import CadastroScreen from './Cadastro'; // Não é necessário aqui
+import { useNavigation } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+
+  const navigation = useNavigation();
 
   const { setLogado } = useContext(AppContext);
 
   const fazerLogin = () => {
     if (email != '' && senha != '') {
-      setLogado(true); // Isso é correto e aciona a navegação em App.js
+      setLogado(true);
+      navigation.goBack();
     }
     else {
       alert("Preencha os campos corretamente!");

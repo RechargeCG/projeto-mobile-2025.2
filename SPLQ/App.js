@@ -26,6 +26,7 @@ import CadastroScreen from './Telas/Cadastro'; // ADICIONADO: Import do Cadastro
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
 import PerfilEdicaoScreen from './Telas/PerfilEdicao';
+import CadastroScreen from './Telas/Cadastro';
 
 
 
@@ -81,35 +82,24 @@ function MainTabs() {
 }
 
 function ConteudoNavegacao() {
-  const { logado } = useContext(AppContext);
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {logado ? (
-            // TELAS PRIVADAS (LOGADO)
-            <>
-              <Stack.Screen name="MainTabs" component={MainTabs} />
-              <Stack.Screen name="Perfil" component={PerfilScreen} />
-              <Stack.Screen name="PerfilEdicao" component={PerfilEdicaoScreen} />
-              <Stack.Screen name="Favoritos" component={FavoritosScreen} />
-              <Stack.Screen name="Historico" component={HistoricoScreen} />
-              <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
-              <Stack.Screen name="CadastrarObra" component={CadastrarObraScreen} />
-              <Stack.Screen name="CadastrarCapitulo" component={CadastrarCapituloScreen} />
-              <Stack.Screen name="EditarObra" component={EditarObraScreen} />
-              <Stack.Screen name="EditarCapitulo" component={EditarCapituloScreen} />
-              <Stack.Screen name="Capitulo" component={CapituloScreen} />
-              <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
-            </>
-          ) : (
-            // TELAS PÚBLICAS (DESLOGADO)
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Cadastro" component={CadastroScreen} />
-            </>
-          )}
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Cadastro" component={CadastroScreen} />
+          <Stack.Screen name="Perfil" component={PerfilScreen} />
+          <Stack.Screen name="PerfilEdicao" component={PerfilEdicaoScreen} />
+          <Stack.Screen name="Favoritos" component={FavoritosScreen} />
+          <Stack.Screen name="Historico" component={HistoricoScreen} />
+          <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
+          <Stack.Screen name="CadastrarObra" component={CadastrarObraScreen} />
+          <Stack.Screen name="CadastrarCapitulo" component={CadastrarCapituloScreen} />
+          <Stack.Screen name="EditarObra" component={EditarObraScreen} />
+          <Stack.Screen name="EditarCapitulo" component={EditarCapituloScreen} />
+          <Stack.Screen name="Capitulo" component={CapituloScreen} />
+          <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { mergeStyles } from '../components/GlobalStyles';
 import { TextInput } from 'react-native-gesture-handler';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
 
@@ -47,6 +48,13 @@ const obras = [
 
 export default function PerfilScreen({  }) {
   const navigation = useNavigation();  
+  const { logado } = useContext(AppContext); 
+
+  useEffect(() => {
+    if (!logado) {
+      navigation.navigate("Login");
+    }
+  });
 
   return (
     <View style={styles.wrapper}>      
