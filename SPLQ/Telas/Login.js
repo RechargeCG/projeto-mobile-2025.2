@@ -3,26 +3,27 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { AppContext } from '../components/ContextoLogin';
-import CadastroScreen from './Cadastro';
+import { useNavigation } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ nav }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+
+  const navigation = useNavigation();
 
   const { setLogado } = useContext(AppContext);
 
   const fazerLogin = () => {
     if (email != '' && senha != '') {
       setLogado(true);
+      navigation.goBack();
     }
     else {
       alert("Preencha os campos corretamente!");
     }
   }
-
-  const [cadastro, setCadastro] = useState(false);
 
   return (
     <View style={{flex:1}}>
@@ -51,7 +52,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity style={{...styles.buttonContainer, marginTop: '10px'}} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{marginTop: '10px'}} onPress={null}>
+        <TouchableOpacity style={{marginTop: '10px'}} onPress={() => navigation.navigate("Cadastro")}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>
