@@ -51,8 +51,12 @@ export default function PerfilEdicaoScreen({  }) {
                 placeholderTextColor={'white'}
               ></TextInput>
 
-              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20}} onPress={() => navigation.navigate("Perfil")}>
+              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20, marginBottom: 10}} onPress={() => navigation.navigate("Perfil")}>
                 <Text style={styles.buttonText}>Salvar Alterações</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 0}}>
+                <Text style={[styles.buttonText, {color: '#ff5555'}]}>Deletar Conta</Text>
               </TouchableOpacity>
 
           </ScrollView>
