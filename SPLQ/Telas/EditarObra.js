@@ -116,7 +116,7 @@ export default function EditarObraScreen({ navigation }) {
 
             
             <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <Text style={[styles.labelText, { marginBottom: 5 }]}>Preview</Text>
+             
               <Image 
                 source={placeholderCover} 
                 style={styles.cover} 

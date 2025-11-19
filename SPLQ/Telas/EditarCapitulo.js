@@ -94,7 +94,7 @@ export default function EditarCapituloScreen({ navigation }) {
 
            
             <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <Text style={[styles.covertitle, { marginBottom: 5 }]}>Preview</Text>
+             
               
            
               <View style={styles.carouselContainer}>

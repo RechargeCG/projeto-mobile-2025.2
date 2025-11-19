@@ -4,8 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { mergeStyles } from '../components/GlobalStyles';
 import { TextInput } from 'react-native-gesture-handler';
-import { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../components/ContextoLogin';
+import { useState } from 'react';
 
 const image = require('../assets/background.png');
 
@@ -48,13 +47,6 @@ const obras = [
 
 export default function PerfilScreen({  }) {
   const navigation = useNavigation();  
-  const { logado } = useContext(AppContext); 
-
-  useEffect(() => {
-    if (!logado) {
-      navigation.navigate("Login");
-    }
-  });
 
   return (
     <View style={styles.wrapper}>      
@@ -81,7 +73,7 @@ export default function PerfilScreen({  }) {
               </View>
 
               <TextInput 
-                style={[styles.inputField, {width: '100%', height: 200, paddingTop: 10, textAlign: 'justify'}]}                
+                style={[styles.inputField, {width: '100%', height: 200}]}                
                 multiline={true}                        
                 inputMode={'none'}
                 value={"Caixa de texto rolável com descrição que o usuário desejar exibir. Lorem ipsum dolor sit amet. Ex iure modi est maiores doloribus ex natus labore et magni neque. Est sequi voluptas et dolores incidunt et aperiam tenetur sed aspernatur perspiciatis ut dolore perspiciatis et error illum. Et quod nobis rem mollitia voluptatibus vel culpa quibusdam ad eaque enim ea quod porro et explicabo odit eos laudantium debitis. Aut quidem dolor qui accusamus exercitationem vel accusantium voluptas qui unde ipsa qui blanditiis quis 33 ducimus voluptatem."}
@@ -93,6 +85,7 @@ export default function PerfilScreen({  }) {
 
               <TouchableOpacity style={{...styles.buttonContainer, marginVertical: 5}}>
                 <Text style={styles.buttonText}>Cadastrar obra</Text>
+                onPress={() => navigation.navigate('CadastrarObra')}
               </TouchableOpacity>
 
               <Text style={styles.sectiontitle}>Minhas obras</Text>
