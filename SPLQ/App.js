@@ -19,6 +19,7 @@ import QuadrinhoScreen from './Telas/Quadrinho';
 import LoginScreen from './Telas/Login';
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
+import PerfilEdicaoScreen from './Telas/PerfilEdicao';
 
 
 
@@ -90,6 +91,7 @@ function ConteudoNavegacao() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="Perfil" component={PerfilScreen} />
+          <Stack.Screen name="PerfilEdicao" component={PerfilEdicaoScreen} />
           <Stack.Screen name="Favoritos" component={FavoritosScreen} />
           <Stack.Screen name="Historico" component={HistoricoScreen} />
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />

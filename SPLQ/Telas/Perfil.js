@@ -79,7 +79,7 @@ export default function PerfilScreen({  }) {
                 value={"Caixa de texto rolável com descrição que o usuário desejar exibir. Lorem ipsum dolor sit amet. Ex iure modi est maiores doloribus ex natus labore et magni neque. Est sequi voluptas et dolores incidunt et aperiam tenetur sed aspernatur perspiciatis ut dolore perspiciatis et error illum. Et quod nobis rem mollitia voluptatibus vel culpa quibusdam ad eaque enim ea quod porro et explicabo odit eos laudantium debitis. Aut quidem dolor qui accusamus exercitationem vel accusantium voluptas qui unde ipsa qui blanditiis quis 33 ducimus voluptatem."}
               ></TextInput>
 
-              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20}}>
+              <TouchableOpacity style={{...styles.buttonContainer, marginTop: 20}} onPress={() => navigation.navigate("PerfilEdicao")}>
                 <Text style={styles.buttonText}>Editar Perfil</Text>
               </TouchableOpacity>
 
