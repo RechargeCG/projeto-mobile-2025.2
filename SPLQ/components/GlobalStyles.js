@@ -54,37 +54,45 @@ export const GlobalStyles = {
     marginVertical: 10,
   },
   labelText: {
-    width: 215,
+    width: '100%', // Garante que ocupe a largura
     color: 'white',
     position: 'absolute',
-    top: 2,
+    top: 8, // Aumentei de 2 para 8 para descer um pouco mais o título
     left: 17,
     fontFamily: 'Montserrat',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 12, // Diminuí levemente (de 15 para 12) para dar hierarquia visual
     zIndex: 10,
   },
   inputField: {
-    backgroundColor: 'rgba(15, 16, 16, 0.4)',
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 11,
-    paddingHorizontal: 15,
-    paddingTop: 20,
-    paddingBottom: 20,
-    color: 'white',
-    fontSize: 15,
-  },
+  backgroundColor: 'rgba(15, 16, 16, 0.4)',
+  borderWidth: 1,
+  borderColor: 'white',
+  borderRadius: 11,
+  paddingHorizontal: 15,
+  
+  // AUMENTADO MAIS O PADDING TOP
+  paddingTop: 35, // Garante que o texto digitado comece abaixo do label
+  paddingBottom: 10, 
+  
+  color: 'white',
+  fontSize: 15,
+  minHeight: 65,
+  textAlignVertical: 'center', // Útil para inputs de linha única no Android
+},
   displayField: {
     backgroundColor: 'rgba(15, 16, 16, 0.4)',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 11,
     paddingHorizontal: 15,
-    paddingTop: 20, 
-    paddingBottom: 20,
+    
+    // MUDANÇA AQUI TAMBÉM:
+    paddingTop: 35, 
+    paddingBottom: 10,
+    
     justifyContent: 'center',
-    minHeight: 60,
+    minHeight: 65,
   },
   displayFieldText: {
     color: 'white',
@@ -263,6 +271,87 @@ export const GlobalStyles = {
     fontWeight: 'bold',
     fontSize: 15,
   },
+  // --- NOVOS ESTILOS PARA CARROSSEL E NAVEGAÇÃO ---
+  carouselContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 15,
+  },
+  carouselImageWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // Uma variação de tamanho de capa (Média) para previews
+  coverMedium: {
+    width: 180, 
+    height: 260,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  
+  // Estilo dos botões quadrados com setas (< >)
+  navArrowButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#222', // Cor escura do botão
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  navArrowText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: -2, // Ajuste fino visual
+  },
+  helperText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 12,
+    marginTop: 5,
+    fontFamily: 'Montserrat', // ou sua fonte padrão
+    textAlign: 'center',
+  },
+  // --- NOVOS ESTILOS PARA HISTORICO/LISTA DE CARDS HORIZONTAIS ---
+historyCard: {
+  flexDirection: 'row',
+  backgroundColor: 'rgba(15, 16, 16, 0.6)',
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: 'rgba(255, 255, 255, 0.3)',
+  marginBottom: 12,
+  overflow: 'hidden',
+  height: 140,
+},
+historyImage: {
+  width: 100,
+  height: '100%',
+},
+historyInfoContainer: {
+  flex: 1,
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  justifyContent: 'space-around',
+},
+infoBlock: {
+  marginBottom: 2,
+},
+infoLabel: {
+  color: 'rgba(255, 255, 255, 0.8)',
+  fontSize: 12,
+  fontFamily: 'Montserrat',
+  fontWeight: '400',
+},
+infoValue: {
+  color: '#FFFFFF',
+  fontSize: 14,
+  fontWeight: 'bold',
+  fontFamily: 'Montserrat',
+}
 };
 
 export const mergeStyles = (LocalStyles) => {

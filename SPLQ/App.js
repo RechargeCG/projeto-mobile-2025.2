@@ -8,6 +8,11 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { FilterScreen, SearchResultsScreen } from "./Telas/Pesquisa";
+import CadastrarCapituloScreen from './Telas/CadastarCapitulo';
+import CadastrarObraScreen from './Telas/CadastrarObra';
+import EditarCapituloScreen from './Telas/EditarCapitulo';
+import EditarObraScreen from './Telas/EditarObra';
+
 import FavoritosScreen from './Telas/Favoritos';
 import HistoricoScreen from './Telas/Historico';
 
@@ -93,7 +98,8 @@ function ConteudoNavegacao() {
           <Stack.Screen name="Favoritos" component={FavoritosScreen} />
           <Stack.Screen name="Historico" component={HistoricoScreen} />
           <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
-
+          <Stack.Screen name= "CadastrarObra" component={CadastrarObraScreen} />
+          <Stack.Screen name= "CadastrarCapitulo" component={CadastrarCapituloScreen} />
           <Stack.Screen name="Capitulo" component={CapituloScreen} />
           <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
         </Stack.Navigator>
