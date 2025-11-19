@@ -2,6 +2,7 @@ import { Text, View, ImageBackground, TouchableOpacity, TextInput, Platform, Key
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react'; // REMOVIDO useEffect e useContext (não usados)
 import { mergeStyles } from '../components/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
 // REMOVIDO: import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
@@ -13,6 +14,8 @@ export default function CadastroScreen({  }) {
   const [dataNasc, setDataNasc] = useState('');
 
   // REMOVIDO: const { logado } = useContext(AppContext);
+
+  const navigation = useNavigation();
 
   // REMOVIDO: lógica de useEffect para dataNasc
 

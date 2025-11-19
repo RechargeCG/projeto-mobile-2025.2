@@ -22,7 +22,6 @@ import PerfilScreen from './Telas/Perfil';
 import CapituloScreen from './Telas/Capitulo';
 import QuadrinhoScreen from './Telas/Quadrinho';
 import LoginScreen from './Telas/Login';
-import CadastroScreen from './Telas/Cadastro'; // ADICIONADO: Import do CadastroScreen
 import { useContext, useState } from 'react';
 import AppProvider, { AppContext } from './components/ContextoLogin';
 import PerfilEdicaoScreen from './Telas/PerfilEdicao';
