@@ -33,6 +33,7 @@ export default function LoginScreen({ navigation }) {
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.boxContainer}>
+          <Text style={styles.labelText}>E-mail</Text>
           <TextInput
               style={styles.inputField}
               placeholder='E-mail'
@@ -42,6 +43,7 @@ export default function LoginScreen({ navigation }) {
           />
         </View>
         <View style={[styles.boxContainer, { marginTop: 10 }]}> 
+          <Text style={styles.labelText}>Senha</Text>
           <TextInput
               style={styles.inputField}
               placeholder='Senha'

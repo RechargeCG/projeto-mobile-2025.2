@@ -73,7 +73,7 @@ export default function PerfilScreen({  }) {
               </View>
 
               <TextInput 
-                style={[styles.inputField, {width: '100%', height: 200}]}                
+                style={[styles.inputField, {width: '100%', height: 200, paddingTop: 10, textAlign: 'justify'}]}                
                 multiline={true}                        
                 inputMode={'none'}
                 value={"Caixa de texto rolável com descrição que o usuário desejar exibir. Lorem ipsum dolor sit amet. Ex iure modi est maiores doloribus ex natus labore et magni neque. Est sequi voluptas et dolores incidunt et aperiam tenetur sed aspernatur perspiciatis ut dolore perspiciatis et error illum. Et quod nobis rem mollitia voluptatibus vel culpa quibusdam ad eaque enim ea quod porro et explicabo odit eos laudantium debitis. Aut quidem dolor qui accusamus exercitationem vel accusantium voluptas qui unde ipsa qui blanditiis quis 33 ducimus voluptatem."}

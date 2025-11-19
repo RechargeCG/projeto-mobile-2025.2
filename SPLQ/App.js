@@ -96,8 +96,10 @@ function ConteudoNavegacao() {
               <Stack.Screen name="Favoritos" component={FavoritosScreen} />
               <Stack.Screen name="Historico" component={HistoricoScreen} />
               <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
-              <Stack.Screen name= "CadastrarObra" component={CadastrarObraScreen} />
-              <Stack.Screen name= "CadastrarCapitulo" component={CadastrarCapituloScreen} />
+              <Stack.Screen name="CadastrarObra" component={CadastrarObraScreen} />
+              <Stack.Screen name="CadastrarCapitulo" component={CadastrarCapituloScreen} />
+              <Stack.Screen name="EditarObra" component={EditarObraScreen} />
+              <Stack.Screen name="EditarCapitulo" component={EditarCapituloScreen} />
               <Stack.Screen name="Capitulo" component={CapituloScreen} />
               <Stack.Screen name="Quadrinho" component={QuadrinhoScreen} />
             </>
