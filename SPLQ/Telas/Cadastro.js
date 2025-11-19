@@ -30,7 +30,6 @@ export default function CadastroScreen({  }) {
     setDataNasc(formattedText);
   };
 
-
   const fazerCadastro = () => {
     // Adicionada validação de tamanho para a data
     if (nome && email && senha && dataNasc.length === 10) { 
