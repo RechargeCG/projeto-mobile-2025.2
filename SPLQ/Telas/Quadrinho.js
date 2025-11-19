@@ -130,7 +130,7 @@ export default function QuadrinhoScreen({  }) {
           {availableTags.map((item, key) => {
             return(
               <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '2%'}} key={key} >
-                <TouchableOpacity style={[styles.buttonContainer,{ height: '80%', width: '90%'}]} onPress={() => navigation.navigate('Capitulo')}>
+                <TouchableOpacity style={[styles.buttonContainer,{ height: '80%', width: '90%'}]} onPress={() => navigation.navigate('Pesquisa')}>
                   <Text numberOfLines={1} style={[styles.buttonText,{fontSize: 12, borderRadius: 500}]}>{item['name']}</Text>
                 </TouchableOpacity>
               </View>
