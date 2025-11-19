@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput, Modal, FlatList } from 'react-native';
+import { 
+  View, 
+  Text, 
+  ImageBackground, 
+  ScrollView, 
+  Image, 
+  TouchableOpacity, 
+  TextInput, 
+  Modal, 
+  FlatList,
+  KeyboardAvoidingView,
+  Platform 
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mergeStyles } from '../components/GlobalStyles'; 
+import Icon from 'react-native-vector-icons/Ionicons';
+
+
 const image = require('../assets/background.png');
 const avatar = require('../assets/avatar.png');
 
@@ -9,27 +24,18 @@ const placeholderCover = require('../assets/capa.png');
 
 
 const availableTags = [
-  { id: '1', name: 'Ação' },
-  { id: '2', name: 'Aventura' },
-  { id: '3', name: 'Comédia' },
-  { id: '4', name: 'Drama' },
-  { id: '5', name: 'Fantasia' },
-  { id: '6', name: 'Ficção Científica' },
-  { id: '7', name: 'Romance' },
-  { id: '8', name: 'Suspense' },
-  { id: '9', name: 'Terror' },
-  { id: '10', name: 'Esportes' },
-  { id: '11', name: 'Musical' },
-  { id: '12', name: 'Histórico' },
-  { id: '13', name: 'Mecha' },
-  { id: '14', name: 'Slice of Life' },
+  { id: '1', name: 'Ação' }, { id: '2', name: 'Aventura' }, { id: '3', name: 'Comédia' },
+  { id: '4', name: 'Drama' }, { id: '5', name: 'Fantasia' }, { id: '6', name: 'Ficção Científica' },
+  { id: '7', name: 'Romance' }, { id: '8', name: 'Suspense' }, { id: '9', name: 'Terror' },
+  { id: '10', name: 'Esportes' }, { id: '11', name: 'Musical' }, { id: '12', name: 'Histórico' },
+  { id: '13', name: 'Mecha' }, { id: '14', name: 'Slice of Life' },
 ];
 const MAX_SELECTION_LIMIT = 4;
 
 
 export default function CadastrarObraScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  const styles = mergeStyles({}); 
+  const styles = mergeStyles(LocalStyles); // Styles agora inclui LocalStyles
   
   // --- ESTADOS DA TELA ---
   const [nomeObra, setNomeObra] = useState('');
@@ -76,17 +82,25 @@ export default function CadastrarObraScreen({ navigation }) {
       <ImageBackground source={image} style={styles.background} />
 
       
-      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
+     <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
+      {/* HEADER CORRIGIDO: Usa styles.header definido no LocalStyles */}
       <View style={styles.header}>
-        <View style={{ margin: '2%', alignItems: 'flex-end' }}>
+        
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={30} color="white" />
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
             <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
           </TouchableOpacity>
-        </View>
+        
       </View>
 
-      
-      <View style={styles.body}>
+      {/* --- CORPO WRAPPER COM KEYBOARDAVOIDINGVIEW --- */}
+      <KeyboardAvoidingView 
+        style={styles.body} 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             
@@ -116,7 +130,7 @@ export default function CadastrarObraScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 placeholder='Título completo da obra'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                placeholderTextColor="rgba(255, 255, 255, 0.4)"
                 value={nomeObra}
                 onChangeText={setNomeObra}
               />
@@ -128,7 +142,7 @@ export default function CadastrarObraScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 placeholder='Nome do autor/mangaká'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                placeholderTextColor="rgba(255, 255, 255, 0.4)"
                 value={autor}
                 onChangeText={setAutor}
               />
@@ -140,7 +154,7 @@ export default function CadastrarObraScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 placeholder='Nome da editora'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                placeholderTextColor="rgba(255, 255, 255, 0.4)"
                 value={editora}
                 onChangeText={setEditora}
               />
@@ -170,23 +184,21 @@ export default function CadastrarObraScreen({ navigation }) {
                   {getSelectedTagText()}
                 </Text>
                 
-                <Text style={{ color: 'white', fontSize: 18, position: 'absolute', right: 15, top: 10 }}>
-                  <Text style={{ fontSize: 18, color: 'white' }}>⌄</Text> 
-                </Text>
+                <Text style={{ color: 'white', fontSize: 18, position: 'absolute', right: 15, top: 20 }}>⌄</Text> 
               </TouchableOpacity>
             </View>
 
             
             <TouchableOpacity 
               style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
-              
+              onPress={() => navigation.navigate('Quadrinho')}
             >
               <Text style={styles.buttonText}>Cadastrar Obra</Text>
             </TouchableOpacity>
 
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       
       
       <Modal
@@ -237,7 +249,6 @@ export default function CadastrarObraScreen({ navigation }) {
               <TouchableOpacity 
                 style={[styles.modalButton, styles.modalSaveButton]} 
                 onPress={() => { 
-                  // Lógica de salvar (fechar o modal, os estados já foram atualizados)
                   setModalVisible(false);
                 }}
               >
@@ -251,3 +262,17 @@ export default function CadastrarObraScreen({ navigation }) {
     </View>
   );
 }
+
+
+// NOVO BLOCO: Definindo os estilos locais para o cabeçalho
+const LocalStyles = {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Essencial para separar os ícones
+    paddingHorizontal: 15, // Espaçamento nas laterais
+    paddingVertical: 8, // Espaçamento vertical (opcional, mas ajuda)
+  },
+};
+
+const styles = mergeStyles(LocalStyles);

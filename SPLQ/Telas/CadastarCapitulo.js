@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
+import { 
+  View, 
+  Text, 
+  ImageBackground, 
+  ScrollView, 
+  Image, 
+  TouchableOpacity, 
+  TextInput,
+  // Novos Imports
+  KeyboardAvoidingView, 
+  Platform 
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mergeStyles } from '../components/GlobalStyles';
+import Icon from 'react-native-vector-icons/Ionicons'; // Importa o Icone
 
 
 const image = require('../assets/background.png');
@@ -24,8 +36,7 @@ const mockPages = [
 export default function CadastrarCapituloScreen({ navigation }) {
   const insets = useSafeAreaInsets();
  
-  const styles = mergeStyles({}); 
-
+  const styles = mergeStyles(LocalStyles); // Usando LocalStyles para o header
 
   const [capituloNum, setCapituloNum] = useState('');
   const [currentPageIndex, setCurrentPageIndex] = useState(0); 
@@ -51,16 +62,23 @@ export default function CadastrarCapituloScreen({ navigation }) {
 
       
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
+      {/* HEADER CORRIGIDO com seta de voltar e espaçamento */}
       <View style={styles.header}>
-        <View style={{ margin: '2%', alignItems: 'flex-end' }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-            <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={30} color="white" />
+        </TouchableOpacity>
+        
+        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+          <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
+        </TouchableOpacity>
       </View>
 
       
-      <View style={styles.body}>
+      {/* BODY WRAPPED WITH KEYBOARDAVOIDINGVIEW */}
+      <KeyboardAvoidingView 
+        style={styles.body}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             
@@ -69,6 +87,7 @@ export default function CadastrarCapituloScreen({ navigation }) {
             
             <TouchableOpacity 
               style={[styles.buttonContainer, { backgroundColor: '#222', marginBottom: 20 }]}
+       
             >
               <Text style={styles.buttonText}>Escolher o arquivo</Text>
             </TouchableOpacity>
@@ -121,13 +140,26 @@ export default function CadastrarCapituloScreen({ navigation }) {
             
             <TouchableOpacity 
               style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
+              // AÇÃO DE NAVEGAÇÃO ADICIONADA
+              onPress={() => navigation.navigate('Capitulo')}
             >
               <Text style={styles.buttonText}>Cadastrar Capitulo</Text>
             </TouchableOpacity>
 
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
+
+// Estilos Locais: Garante que o header use flexbox para espaçar os ícones
+const LocalStyles = {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15, // Espaçamento nas laterais
+    paddingVertical: 8, 
+  },
+};

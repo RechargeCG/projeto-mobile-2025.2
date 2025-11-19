@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, ScrollView, Image, TouchableOpacity, TextInput, Modal, FlatList } from 'react-native';
+import { 
+  View, 
+  Text, 
+  ImageBackground, 
+  ScrollView, 
+  Image, 
+  TouchableOpacity, 
+  TextInput, 
+  Modal, 
+  FlatList,
+  // Novos Imports
+  KeyboardAvoidingView, 
+  Platform 
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mergeStyles } from '../components/GlobalStyles'; 
+import Icon from 'react-native-vector-icons/Ionicons'; // Importa o Icone
 
 
 const image = require('../assets/background.png');
@@ -11,27 +25,18 @@ const placeholderCover = require('../assets/capa.png');
 
 
 const availableTags = [
-  { id: '1', name: 'Ação' },
-  { id: '2', name: 'Aventura' },
-  { id: '3', name: 'Comédia' },
-  { id: '4', name: 'Drama' },
-  { id: '5', name: 'Fantasia' },
-  { id: '6', name: 'Ficção Científica' },
-  { id: '7', name: 'Romance' },
-  { id: '8', name: 'Suspense' },
-  { id: '9', name: 'Terror' },
-  { id: '10', name: 'Esportes' },
-  { id: '11', name: 'Musical' },
-  { id: '12', name: 'Histórico' },
-  { id: '13', name: 'Mecha' },
-  { id: '14', name: 'Slice of Life' },
+  { id: '1', name: 'Ação' }, { id: '2', name: 'Aventura' }, { id: '3', name: 'Comédia' },
+  { id: '4', name: 'Drama' }, { id: '5', name: 'Fantasia' }, { id: '6', name: 'Ficção Científica' },
+  { id: '7', name: 'Romance' }, { id: '8', name: 'Suspense' }, { id: '9', name: 'Terror' },
+  { id: '10', name: 'Esportes' }, { id: '11', name: 'Musical' }, { id: '12', name: 'Histórico' },
+  { id: '13', name: 'Mecha' }, { id: '14', name: 'Slice of Life' },
 ];
 const MAX_SELECTION_LIMIT = 4;
 
 
 export default function EditarObraScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  const styles = mergeStyles({}); 
+  const styles = mergeStyles(LocalStyles); // Usando LocalStyles para o header
   
   
   const [nomeObra, setNomeObra] = useState('');
@@ -79,16 +84,23 @@ export default function EditarObraScreen({ navigation }) {
 
      
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
+      {/* HEADER CORRIGIDO com seta de voltar e espaçamento */}
       <View style={styles.header}>
-        <View style={{ margin: '2%', alignItems: 'flex-end' }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-            <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={30} color="white" />
+        </TouchableOpacity>
+        
+        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+          <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
+        </TouchableOpacity>
       </View>
 
       
-      <View style={styles.body}>
+      {/* BODY WRAPPED WITH KEYBOARDAVOIDINGVIEW */}
+      <KeyboardAvoidingView 
+        style={styles.body}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
             
@@ -97,7 +109,7 @@ export default function EditarObraScreen({ navigation }) {
           
             <TouchableOpacity 
               style={[styles.buttonContainer, { marginBottom: 10, backgroundColor: 'rgba(0,0,0,0.6)' }]}
-              
+              onPress={() => alert('Abrir seleção de imagem')}
             >
               <Text style={styles.buttonText}>Escolher imagem de capa</Text>
             </TouchableOpacity>
@@ -180,22 +192,22 @@ export default function EditarObraScreen({ navigation }) {
 
             
             <TouchableOpacity 
-              style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
-              
+              style={[styles.buttonContainer, { marginTop: 30 }]}
+              onPress={() => navigation.goBack()} // Salvar e voltar
             >
               <Text style={styles.buttonText}>Salvar Alterações</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
-              style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
-              
+              style={[styles.buttonContainer, { marginTop: 10, marginBottom: 50, backgroundColor: '#c0392b' }]}
+        
             >
               <Text style={styles.buttonText}>Excluir obra</Text>
             </TouchableOpacity>
 
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       
      
       <Modal
@@ -260,3 +272,14 @@ export default function EditarObraScreen({ navigation }) {
     </View>
   );
 }
+
+// Estilos Locais: Garante que o header use flexbox para espaçar os ícones
+const LocalStyles = {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15, // Espaçamento nas laterais
+    paddingVertical: 8, 
+  },
+};
