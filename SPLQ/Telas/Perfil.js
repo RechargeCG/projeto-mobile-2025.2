@@ -83,9 +83,8 @@ export default function PerfilScreen({  }) {
                 <Text style={styles.buttonText}>Editar Perfil</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={{...styles.buttonContainer, marginVertical: 5}}>
-                <Text style={styles.buttonText}>Cadastrar obra</Text>
-                onPress={() => navigation.navigate('CadastrarObra')}
+              <TouchableOpacity style={{...styles.buttonContainer, marginVertical: 5}} onPress={() => navigation.navigate('CadastrarObra')}>
+                <Text style={styles.buttonText}>Cadastrar obra</Text> 
               </TouchableOpacity>
 
               <Text style={styles.sectiontitle}>Minhas obras</Text>

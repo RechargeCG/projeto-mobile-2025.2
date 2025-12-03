@@ -125,12 +125,32 @@ export default function QuadrinhoScreen({  }) {
           inputMode={'none'}
           value={"Caixa de texto rolável com descrição que o usuário desejar exibir. Lorem ipsum dolor sit amet. Ex iure modi est maiores doloribus ex natus labore et magni neque. Est sequi voluptas et dolores incidunt et aperiam tenetur sed aspernatur perspiciatis ut dolore perspiciatis et error illum. Et quod nobis rem mollitia voluptatibus vel culpa quibusdam ad eaque enim ea quod porro et explicabo odit eos laudantium debitis. Aut quidem dolor qui accusamus exercitationem vel accusantium voluptas qui unde ipsa qui blanditiis quis 33 ducimus voluptatem."}
         ></TextInput>
+        <Text style={styles.sectiontitle}>Autor(es)</Text>
+        <TextInput 
+          style={[styles.inputField, {width: '100%', height: 20, paddingTop: 10, textAlign: 'justify'}]}                
+          multiline={true}                        
+          inputMode={'none'}
+          value={"Nomes dos autores."}
+        ></TextInput>
+        <Text style={styles.sectiontitle}>Editora</Text>
+        <TextInput 
+          style={[styles.inputField, {width: '100%', height: 20, paddingTop: 10, textAlign: 'justify'}]}                
+          multiline={true}                        
+          inputMode={'none'}
+          value={"Nome da editora."}
+        ></TextInput>
+        <Text style={styles.sectiontitle}>Publicador(a)</Text>
+        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%'}}>
+          <TouchableOpacity style={[styles.buttonContainer,{width: '100%'}]} onPress={() => navigation.navigate('Perfil')}>
+            <Text style={styles.buttonText}>Nome do(a) publicador(a)</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.sectiontitle}>Gêneros (Tags)</Text>
         <View style={{flex: 1, flexDirection: 'row', alignItems: 'right', justifyContent: 'space-between', width: '100%'}}>
           {availableTags.map((item, key) => {
             return(
               <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '2%'}} key={key} >
-                <TouchableOpacity style={[styles.buttonContainer,{ height: '80%', width: '90%'}]} onPress={() => navigation.navigate('Pesquisa')}>
+                <TouchableOpacity style={[styles.buttonContainer,{ height: '80%', width: '90%'}]} onPress={() => navigation.navigate('MainTabs', { screen: 'Pesquisa', params: {screen: 'SearchResults'}})}>
                   <Text numberOfLines={1} style={[styles.buttonText,{fontSize: 12, borderRadius: 500}]}>{item['name']}</Text>
                 </TouchableOpacity>
               </View>
