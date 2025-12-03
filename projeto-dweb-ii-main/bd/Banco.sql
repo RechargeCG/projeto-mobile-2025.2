@@ -4,7 +4,8 @@ CREATE TABLE Usuario (
     email VARCHAR(280),
     senha VARCHAR(280),
     descricao VARCHAR(1000),
-    fonte_foto VARCHAR(280)
+    fonte_foto VARCHAR(280),
+    data_nascimento DATE,
 );
 
 CREATE TABLE Quadrinho (
@@ -25,6 +26,7 @@ CREATE TABLE Capitulo (
     fonte VARCHAR(280),
     visualizacao INT,
     fk_Quadrinho_idQua INT,
+    data DATETIME,
     FOREIGN KEY (fk_Quadrinho_idQua) REFERENCES Quadrinho (idQua) ON DELETE CASCADE
 );
 
@@ -33,6 +35,7 @@ CREATE TABLE Comentario (
     texto VARCHAR(280),
     fk_Capitulo_idCap INT,
     fk_Usuario_idUsu INT,
+    data DATETIME,
     FOREIGN KEY (fk_Capitulo_idCap) REFERENCES Capitulo (idCap) ON DELETE CASCADE,
     FOREIGN KEY (fk_Usuario_idUsu) REFERENCES Usuario (idUsu) ON DELETE CASCADE
 );

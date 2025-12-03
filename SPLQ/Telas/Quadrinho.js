@@ -93,6 +93,44 @@ const availableTags = [
 export default function QuadrinhoScreen({  }) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  const [dataMessage, setDataMessage] = useState('Aguardando conexão...');
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    const PHP_API_URL = 'http://200.18.140.153/teste/index.php'; 
+    try {
+      const response = await fetch(PHP_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Verifica se a resposta HTTP foi bem-sucedida
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Atualiza o estado com a mensagem e o timestamp do PHP
+      setDataMessage(`✅ Sucesso! \n Mensagem: ${data.message} \n Timestamp: ${data.timestamp} \n Servidor: ${data.serverName}`);
+      
+    } catch (error) {
+      console.error('Erro ao buscar dados do PHP:', error);
+      setDataMessage(`❌ ERRO na Conexão:\n Verifique se o PHP está rodando e o IP está correto. \n Detalhe: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Executa a função fetchData ao montar o componente
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
   return (
     <View style={styles.wrapper}>
       <ImageBackground source={image} style={styles.background} />
