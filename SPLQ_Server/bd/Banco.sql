@@ -16,6 +16,7 @@ CREATE TABLE Quadrinho (
     descricao VARCHAR(1000),
     fonte_capa VARCHAR(280),
     tag VARCHAR(280),
+    status BOOLEAN,
     fk_Usuario_idUsu INT,
     FOREIGN KEY (fk_Usuario_idUsu) REFERENCES Usuario (idUsu) ON DELETE CASCADE
 );
@@ -26,7 +27,8 @@ CREATE TABLE Capitulo (
     fonte VARCHAR(280),
     visualizacao INT,
     fk_Quadrinho_idQua INT,
-    data DATETIME,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status BOOLEAN,
     FOREIGN KEY (fk_Quadrinho_idQua) REFERENCES Quadrinho (idQua) ON DELETE CASCADE
 );
 
@@ -35,7 +37,8 @@ CREATE TABLE Comentario (
     texto VARCHAR(280),
     fk_Capitulo_idCap INT,
     fk_Usuario_idUsu INT,
-    data DATETIME,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status BOOLEAN,
     FOREIGN KEY (fk_Capitulo_idCap) REFERENCES Capitulo (idCap) ON DELETE CASCADE,
     FOREIGN KEY (fk_Usuario_idUsu) REFERENCES Usuario (idUsu) ON DELETE CASCADE
 );
@@ -50,7 +53,7 @@ CREATE TABLE Favorito (
 CREATE TABLE Historico (
     fk_Usuario_idUsu INT,
     fk_Capitulo_idCap INT,
-    data DATETIME,
+    data DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_Usuario_idUsu) REFERENCES Usuario (idUsu) ON DELETE CASCADE,
     FOREIGN KEY (fk_Capitulo_idCap) REFERENCES Capitulo (idCap) ON DELETE CASCADE
 );
