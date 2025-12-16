@@ -43,7 +43,7 @@ import {
     const route = useRoute();
     const insets = useSafeAreaInsets();
   
-    const { idQua } = route.params; // recebido da navegação
+    // const { idQua } = route.params; // recebido da navegação
   
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,13 +59,12 @@ import {
   
     const fetchQuadrinho = async () => {
       try {
-        alert("dataaa");
-        const response = await fetch('http://200.18.140.22/SPLQ_Server/backend/quadrinho.php', {
+        const formData = new FormData();
+        formData.append('idQua', 1);
+
+        const response = await fetch('http://200.18.141.34/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({ 'idQua': 1 }).toString(),
+          body: formData
         });
   
         const data = await response.json();
@@ -73,14 +72,12 @@ import {
         if (!data.success) {
           throw new Error(data.error);
         }
-
         
         setQuadrinho(data.quadrinho);
         setCapitulos(data.capitulos || []);
         setTags(data.tags || []);
         setPublicador(data.publicador || '');
       } catch (err) {
-        alert("Aquii");
         setError(err.message);
       } finally {
         setLoading(false);
@@ -95,14 +92,14 @@ import {
       );
     }
     
-    if (error) {
-      alert(error);
-      return (
-        <View style={styles.wrapper}>
-          <Text style={{ color: 'white', textAlign: 'center' }}>{error}</Text>
-        </View>
-      );
-    }
+    // if (error) {
+    //   alert(error);
+    //   return (
+    //     <View style={styles.wrapper}>
+    //       <Text style={{ color: 'white', textAlign: 'center' }}>{error}</Text>
+    //     </View>
+    //   );
+    // }
   
     return (
       <View style={styles.wrapper}>
@@ -127,7 +124,7 @@ import {
             style={[styles.inputField, { height: 200 }]}
             multiline
             editable={false}
-            value={quadrinho.sinopse}
+            value={quadrinho.descricao}
           />
   
           <Text style={styles.sectiontitle}>Editora</Text>

@@ -7,7 +7,7 @@
 		private $host = "localhost:3306";
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
-		private $senha = "";
+		private $senha = "cefet";
 		private $banco = "splq";
 		private $conexao;
 
