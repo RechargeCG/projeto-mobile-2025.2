@@ -43,7 +43,7 @@ import {
     const route = useRoute();
     const insets = useSafeAreaInsets();
   
-    const { idQua } = route.params; // recebido da navegação
+    const { idQua } = 1;//route.params; // recebido da navegação
   
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,7 +59,7 @@ import {
   
     const fetchQuadrinho = async () => {
       try {
-        const response = await fetch('http://SEU_SERVIDOR/api/quadrinho.php', {
+        const response = await fetch('http://200.18.141.34/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -72,18 +72,19 @@ import {
         if (!data.success) {
           throw new Error(data.error);
         }
-  
+        
         setQuadrinho(data.quadrinho);
         setCapitulos(data.capitulos || []);
         setTags(data.tags || []);
         setPublicador(data.publicador || '');
       } catch (err) {
+        // alert("Aquii");
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-  
+    
     if (loading) {
       return (
         <View style={[styles.wrapper, { justifyContent: 'center' }]}>
@@ -91,8 +92,9 @@ import {
         </View>
       );
     }
-  
+    
     if (error) {
+      alert(error);
       return (
         <View style={styles.wrapper}>
           <Text style={{ color: 'white', textAlign: 'center' }}>{error}</Text>

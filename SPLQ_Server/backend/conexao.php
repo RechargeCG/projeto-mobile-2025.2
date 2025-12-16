@@ -8,7 +8,7 @@
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
 		private $senha = "";
-		private $banco = "dwebii";
+		private $banco = "splq";
 		private $conexao;
 
 		//Função para retornar a conexão com o banco

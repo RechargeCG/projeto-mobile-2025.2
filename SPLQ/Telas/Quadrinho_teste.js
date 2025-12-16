@@ -98,7 +98,7 @@ export default function QuadrinhoScreen({  }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
-    const PHP_API_URL = 'http://200.18.140.153/teste/index.php'; 
+    const PHP_API_URL = 'http://200.18.141.34/SPLQ_Server/backend/quadrinho.php'; 
     try {
       const response = await fetch(PHP_API_URL, {
         method: 'POST',

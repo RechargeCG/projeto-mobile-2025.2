@@ -5,7 +5,7 @@ CREATE TABLE Usuario (
     senha VARCHAR(280),
     descricao VARCHAR(1000),
     fonte_foto VARCHAR(280),
-    data_nascimento DATE,
+    data_nascimento DATE
 );
 
 CREATE TABLE Quadrinho (
