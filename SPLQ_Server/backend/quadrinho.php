@@ -42,7 +42,7 @@ $quadrinho = mysqli_fetch_assoc($resQuadrinho);
 if (!$quadrinho) {
     echo json_encode([
         'success' => false,
-        'error' => 'Quadrinho não encontrado'. $resQuadrinho
+        'error' => 'Quadrinho não encontrado'
     ]);
     exit;
 }

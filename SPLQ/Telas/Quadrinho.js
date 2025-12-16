@@ -43,7 +43,7 @@ import {
     const route = useRoute();
     const insets = useSafeAreaInsets();
   
-    const { idQua } = 1;//route.params; // recebido da navegação
+    const { idQua } = route.params; // recebido da navegação
   
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,26 +59,28 @@ import {
   
     const fetchQuadrinho = async () => {
       try {
-        const response = await fetch('http://200.18.141.34/SPLQ_Server/backend/quadrinho.php', {
+        alert("dataaa");
+        const response = await fetch('http://200.18.140.22/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: new URLSearchParams({ idQua }).toString(),
+          body: new URLSearchParams({ 'idQua': 1 }).toString(),
         });
   
         const data = await response.json();
-  
+        
         if (!data.success) {
           throw new Error(data.error);
         }
+
         
         setQuadrinho(data.quadrinho);
         setCapitulos(data.capitulos || []);
         setTags(data.tags || []);
         setPublicador(data.publicador || '');
       } catch (err) {
-        // alert("Aquii");
+        alert("Aquii");
         setError(err.message);
       } finally {
         setLoading(false);

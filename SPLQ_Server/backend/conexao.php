@@ -14,7 +14,7 @@
 		//Função para retornar a conexão com o banco
 		function criarConexao(){
 			$conexao = @mysqli_connect($this->host,$this->usuario,$this->senha,$this->banco);
-			if(!$conexao) $conexao = mysqli_connect($this->hostalternativo,$this->usuario,$this->senha,$this->banco);
+			if(!$conexao) $conexao = @mysqli_connect($this->hostalternativo,$this->usuario,$this->senha,$this->banco);
 			return $conexao;
 		}
 	}
