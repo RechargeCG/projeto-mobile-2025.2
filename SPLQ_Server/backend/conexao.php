@@ -8,13 +8,13 @@
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
 		private $senha = "";
-		private $banco = "dwebii";
-		private $conexao;
+		private $banco = "splq";
+
 
 		//Função para retornar a conexão com o banco
 		function criarConexao(){
 			$conexao = @mysqli_connect($this->host,$this->usuario,$this->senha,$this->banco);
-			if(!$conexao) $conexao = mysqli_connect($this->hostalternativo,$this->usuario,$this->senha,$this->banco);
+			if(!$conexao) $conexao = @mysqli_connect($this->hostalternativo,$this->usuario,$this->senha,$this->banco);
 			return $conexao;
 		}
 	}
