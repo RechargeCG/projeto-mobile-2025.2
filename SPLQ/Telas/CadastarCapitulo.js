@@ -162,4 +162,4 @@ const LocalStyles = {
     paddingHorizontal: 15, // Espaçamento nas laterais
     paddingVertical: 8, 
   },
-};
+};z
