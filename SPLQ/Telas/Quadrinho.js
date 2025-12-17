@@ -62,7 +62,7 @@ import {
         const formData = new FormData();
         formData.append('idQua', 1);
 
-        const response = await fetch('http://192.168.1.7/SPLQ_Server/backend/quadrinho.php', {
+        const response = await fetch('http://192.168.2.102/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           body: formData
         });
