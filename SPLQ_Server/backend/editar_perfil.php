@@ -5,7 +5,7 @@
     $conexao = $conexao->criarConexao();
 
     // Convertendo para inteiro para garantir segurança do ID
-    $id = intval($_SESSION['id']); 
+    $id = intval($_POST['id']); 
 
     // Função de atualização genérica usando Prepared Statements
     function atualizarCampo($conexao, $campo, $valor, $id) {
