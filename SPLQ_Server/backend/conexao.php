@@ -7,7 +7,7 @@
 		private $host = "localhost:3306";
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
-		private $senha = "cefet";
+		private $senha = "";
 		private $banco = "splq";
 		private $conexao;
 
@@ -18,4 +18,3 @@
 			return $conexao;
 		}
 	}
-?>

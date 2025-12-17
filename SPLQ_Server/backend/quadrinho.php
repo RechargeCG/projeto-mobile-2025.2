@@ -1,8 +1,11 @@
 <?php
+// Desabilita a exibição de erros no output HTTP, evitando quebras de JSON.
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0); // CORRIGIDO: Exibição de erros desativada
 
+// Configura o cabeçalho para retorno JSON e permite CORS.
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *'); // CORRIGIDO: Adicionado header CORS
 require_once("conexao.php");
 
 // ----------------------------
@@ -37,6 +40,17 @@ if (!$conexao) {
 // ----------------------------
 $queryQuadrinho = "SELECT * FROM Quadrinho WHERE idQua = $idQua";
 $resQuadrinho = mysqli_query($conexao, $queryQuadrinho);
+
+// Verifica se a query retornou dados antes de tentar usar o resultado.
+if (!$resQuadrinho) {
+    // Se a query falhar (erro SQL), retorna um JSON de erro.
+    echo json_encode([
+        'success' => false,
+        'error' => 'Erro ao buscar dados do quadrinho no banco de dados.'
+    ]);
+    exit;
+}
+
 $quadrinho = mysqli_fetch_assoc($resQuadrinho);
 
 if (!$quadrinho) {
@@ -56,13 +70,18 @@ $queryViews = "
     WHERE fk_Quadrinho_idQua = $idQua
 ";
 $resViews = mysqli_query($conexao, $queryViews);
-$views = mysqli_fetch_assoc($resViews)['total'] ?? 0;
+
+// CORRIGIDO: Adicionada verificação para evitar Warning se $resViews for false
+$views = 0;
+if ($resViews) {
+    $views = mysqli_fetch_assoc($resViews)['total'] ?? 0;
+}
 
 // ----------------------------
 // 5. Lista de capítulos
 // ----------------------------
 $queryCapitulos = "
-    SELECT numCap 
+    SELECT * 
     FROM Capitulo 
     WHERE fk_Quadrinho_idQua = $idQua 
     ORDER BY numCap ASC
@@ -70,8 +89,11 @@ $queryCapitulos = "
 $resCapitulos = mysqli_query($conexao, $queryCapitulos);
 
 $capitulos = [];
-while ($row = mysqli_fetch_assoc($resCapitulos)) {
-    $capitulos[] = (int) $row['numCap'];
+// CORRIGIDO: Adicionada verificação para evitar Warning se $resCapitulos for false
+if ($resCapitulos) { 
+    while ($row = mysqli_fetch_assoc($resCapitulos)) {
+        $capitulos[] = [$row['numCap'],$row['idQua']];
+    }
 }
 
 // ----------------------------
@@ -85,7 +107,12 @@ $queryPublicador = "
     WHERE idUsu = $idPublicador
 ";
 $resPublicador = mysqli_query($conexao, $queryPublicador);
-$publicador = mysqli_fetch_assoc($resPublicador)['nome'] ?? null;
+
+// CORRIGIDO: Adicionada verificação para evitar Warning se $resPublicador for false
+$publicador = null;
+if ($resPublicador) {
+    $publicador = mysqli_fetch_assoc($resPublicador)['nome'] ?? null;
+}
 
 // ----------------------------
 // 7. Resposta final
@@ -94,7 +121,9 @@ echo json_encode([
     'success' => true,
     'quadrinho' => $quadrinho,
     'capitulos' => $capitulos,
-    'tags' => [],
+    'tags' => $quadrinho['tag'],
     'publicador' => $publicador
 ], JSON_UNESCAPED_UNICODE);
 exit;
+
+?>

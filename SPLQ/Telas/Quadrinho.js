@@ -62,20 +62,19 @@ import {
         const formData = new FormData();
         formData.append('idQua', 1);
 
-        const response = await fetch('http://200.18.141.34/SPLQ_Server/backend/quadrinho.php', {
+        const response = await fetch('http://192.168.1.7/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           body: formData
         });
-  
+        
         const data = await response.json();
         
         if (!data.success) {
           throw new Error(data.error);
         }
-        
         setQuadrinho(data.quadrinho);
         setCapitulos(data.capitulos || []);
-        setTags(data.tags || []);
+        setTags([data.tags] || []);
         setPublicador(data.publicador || '');
       } catch (err) {
         setError(err.message);
@@ -92,19 +91,19 @@ import {
       );
     }
     
-    // if (error) {
-    //   alert(error);
-    //   return (
-    //     <View style={styles.wrapper}>
-    //       <Text style={{ color: 'white', textAlign: 'center' }}>{error}</Text>
-    //     </View>
-    //   );
-    // }
-  
+    if (error) {
+      alert(error);
+      return (
+        <View style={styles.wrapper}>
+          <Text style={{ color: 'white', textAlign: 'center' }}>{error}</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.wrapper}>
         <ImageBackground source={image} style={styles.background} />
-  
+        <View style={{ paddingTop: useSafeAreaInsets().top, backgroundColor: '#ffffffaa' }} />
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={24} color="white" />
@@ -117,7 +116,7 @@ import {
         >
           <Text style={styles.screentitle}>{quadrinho.titulo}</Text>
   
-          <ProportionalImageItem uri={quadrinho.capa_url} />
+          <ProportionalImageItem uri={quadrinho.fonte_capa} />
   
           <Text style={styles.sectiontitle}>Sinopse</Text>
           <TextInput
@@ -152,11 +151,11 @@ import {
           </View>
   
           <Text style={styles.sectiontitle}>Capítulos</Text>
-          {capitulos.map((numCap, index) => (
+          {capitulos.map((idCap, numCap, index) => (
             <TouchableOpacity
               key={index}
               style={[styles.buttonContainer, { marginBottom: 8 }]}
-              onPress={() => navigation.navigate('Capitulo', { idQua, numCap })}
+              onPress={() => navigation.navigate('Capitulo', { idCap, numCap })}
             >
               <Text style={styles.buttonText}>Capítulo {numCap}</Text>
             </TouchableOpacity>
