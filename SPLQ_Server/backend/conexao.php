@@ -7,9 +7,8 @@
 		private $host = "localhost:3306";
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
-		private $senha = "";
-		private $banco = "splq";
-
+		private $senha = "root";
+		private $banco = "splq_db";
 
 		//Função para retornar a conexão com o banco
 		function criarConexao(){

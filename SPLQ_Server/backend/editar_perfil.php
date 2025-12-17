@@ -1,63 +1,91 @@
 <?php
-    //Cria conexão com o banco de dados
     session_start();
     require_once("conexao.php");
     $conexao = new BD();
     $conexao = $conexao->criarConexao();
 
-    $id = $_SESSION['id'];
+    // Convertendo para inteiro para garantir segurança do ID
+    $id = intval($_SESSION['id']); 
 
+    // Função de atualização genérica usando Prepared Statements
+    function atualizarCampo($conexao, $campo, $valor, $id) {
+        // Uso de '?' como placeholder para o valor
+        $stmt = $conexao->prepare("UPDATE usuario SET $campo = ? WHERE idUsu = ?");
+        
+        // Liga os parâmetros: 's' para string, 'i' para integer
+        // Note que o $campo (nome da coluna) não é ligado, por isso deve ser validado/fixo.
+        $stmt->bind_param("si", $valor, $id); 
+        
+        if ($stmt->execute()) {
+            // Sucesso
+            $stmt->close();
+            return true;
+        } else {
+            // Erro
+            error_log("Erro na atualização do campo $campo: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+    }
+
+    // --- Atualização de Nome ---
     if(isset($_POST['nome'])){
-        $nome = $_POST['nome'];
-        mysqli_query($conexao, "UPDATE Usuario SET nome = \"$nome\"  WHERE idUsu = $id");
+        $nome = trim($_POST['nome']); // Limpa espaços em branco
+        atualizarCampo($conexao, "nome", $nome, $id);
     }
     
+    // --- Atualização de Descrição ---
     if(isset($_POST['descricao'])){
-        $descricao = $_POST['descricao'];
-        mysqli_query($conexao, "UPDATE Usuario SET descricao = \"$descricao\"  WHERE idUsu = $id");
+        $descricao = trim($_POST['descricao']);
+        atualizarCampo($conexao, "descricao", $descricao, $id);
     }
 
-    //Obtém a imagem de perfil do usuário divida entre seus dados, também explicitando a extensão
-    if(isset($_FILES['imagem'])){
+    // --- Processamento de Imagem (Upload) ---
+    if(isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK){
         $arquivo = $_FILES['imagem'];
-        $arquivoNome = $_FILES['imagem']['name'];
-        $arquivoTmpNome = $_FILES['imagem']['tmp_name'];
-        $arquivoTamanho = $_FILES['imagem']['size'];
-        $arquivoErro = $_FILES['imagem']['error'];
-        $arquivoTipo = $_FILES['imagem']['type'];
-        $arquivoExt = explode('.', $arquivoNome);
-        $arquivoExtReal = strtolower(end($arquivoExt));
+        $arquivoNome = $arquivo['name'];
+        $arquivoTmpNome = $arquivo['tmp_name'];
+        $arquivoExt = pathinfo($arquivoNome, PATHINFO_EXTENSION);
+        $arquivoExtReal = strtolower($arquivoExt);
         $permitido = array('jpg','jpeg','png','gif');
 
-        //Define e cria o caminho do diretório a para a imagem de perfil
-        $arquivoDestino = "../bd/usuarios/$id";
-        try {
-            mkdir($arquivoDestino,0777);
-        }
-        catch(e){
-            echo "Diretório já existe<br>";
-        }
-        //echo $arquivoDestino."<br>";
-
-        // echo $arquivoNome."0<br>";
-        // echo in_array($arquivoExtReal, $permitido)."a<br>";
-        // echo (!$arquivoErro)."b<br>";
-        if(in_array($arquivoExtReal, $permitido) && !$arquivoErro){
-            //Adiciona a capa no diretório
-            $arquivoDestino.="/perfil.$arquivoExtReal";
-            //echo $arquivoDestino;
-            if (move_uploaded_file($arquivoTmpNome, $arquivoDestino)){
-                //Cria o quadrinho no banco de dados, logo direcionando à sua própria página com 
-                $arquivoDestino="../".$arquivoDestino;
-                mysqli_query($conexao, "UPDATE Usuario SET fonte_foto = \"$arquivoDestino\"  WHERE idUsu = $id");
+        if(in_array($arquivoExtReal, $permitido)){
+            
+            // Define e cria o caminho do diretório para a imagem de perfil
+            $diretorioDestino = "../bd/usuarios/$id";
+            if (!is_dir($diretorioDestino)) {
+                // Cria o diretório com permissões 0777 recursivamente
+                if (!mkdir($diretorioDestino, 0777, true)) { 
+                    error_log("Falha ao criar diretório: $diretorioDestino");
+                    // Continue com o tratamento de erro se necessário
+                }
             }
-            else
-                echo "Algo deu errado1";
-        }
-        else
-            echo "Algo deu errado2";
-    }
 
+            // Define o nome final do arquivo de perfil
+            $arquivoDestinoLocal = "$diretorioDestino/perfil.$arquivoExtReal";
+            $arquivoDestinoDB = "../$diretorioDestino/perfil.$arquivoExtReal"; // Caminho para salvar no DB
+
+            // Move o arquivo para o destino
+            if (move_uploaded_file($arquivoTmpNome, $arquivoDestinoLocal)){
+                // Atualiza o banco de dados com o caminho da imagem
+                atualizarCampo($conexao, "fonte_foto", $arquivoDestinoDB, $id);
+            }
+            else {
+                error_log("Erro ao mover arquivo para: $arquivoDestinoLocal");
+            }
+        }
+        else {
+            error_log("Extensão de arquivo não permitida: $arquivoExtReal");
+        }
+    }
+    // ... O seu tratamento de erro para imagem é simplificado aqui
+    // ... mas você pode retornar mensagens JSON para o React Native para um feedback melhor.
+
+
+    // Como o React Native não segue o cabeçalho 'Location' do fetch, 
+    // ele deve ser tratado no lado do cliente.
+    // Você pode retornar um JSON de sucesso em vez de redirecionar imediatamente.
+    // Para manter a compatibilidade com o seu código original, apenas redirecionamos:
     header('Location: acessa_perfil.php');
     exit();
 ?>

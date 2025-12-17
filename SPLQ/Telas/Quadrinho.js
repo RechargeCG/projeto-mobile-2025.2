@@ -65,8 +65,6 @@ import {
       try {
         const formData = new FormData();
         formData.append('idQua', 1);
-        
-        // CORRIGIDO: URL sem a porta 8081, assumindo que XAMPP está na porta 80
         const response = await fetch('http://192.168.1.7/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           body: formData
