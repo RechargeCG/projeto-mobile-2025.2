@@ -60,6 +60,7 @@ export default function PerfilEdicaoScreen({ }) {
       const fileType = uriParts[uriParts.length - 1];
       
       formData.append('imagem', {
+        id: 1,
         uri: imagemSelecionada,
         name: `profile.${fileType}`, // Nome do arquivo no $_FILES do PHP
         type: `image/${fileType}`, // Tipo MIME

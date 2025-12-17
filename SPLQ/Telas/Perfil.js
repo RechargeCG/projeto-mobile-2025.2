@@ -7,7 +7,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { mergeStyles } from '../components/GlobalStyles';
 import { TextInput } from 'react-native-gesture-handler';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AppContext } from '../components/ContextoLogin';
+import LoginScreen from './Login';
 
 const image = require('../assets/background.png');
 
@@ -15,6 +17,8 @@ export default function PerfilScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const insets = useSafeAreaInsets();
+
+  const { idUsu, ip } = useContext(AppContext);
 
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
@@ -28,9 +32,10 @@ export default function PerfilScreen() {
   const fetchPerfil = async () => {
     try {
       const formData = new FormData();
-      formData.append('idPerfil', 1);
+      alert(idUsu)
+      formData.append('idPerfil', idUsu);
 
-      const response = await fetch('http://192.168.2.102/SPLQ_Server/backend/acessa_perfil.php', {
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/acessa_perfil.php`, {
         method: 'POST',
         body: formData
       });
@@ -49,6 +54,12 @@ export default function PerfilScreen() {
       setLoading(false);
     }
   };
+  
+    if (!idUsu) {
+      return (
+        <LoginScreen></LoginScreen>
+      )
+    }
 
   if (loading) {
     return (

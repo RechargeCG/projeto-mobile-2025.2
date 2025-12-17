@@ -13,19 +13,43 @@ export default function LoginScreen({ }) {
 
   const navigation = useNavigation();
 
-  const { setLogado } = useContext(AppContext);
+  const { setIdUsu, ip } = useContext(AppContext);
 
-  const fazerLogin = () => {
-    if (email != '' && senha != '') {
-      setLogado(true);
-      navigation.goBack();
-    }
-    else {
+  const fazerLogin = async () => {
+    if (email !== '' && senha !== '') {
+      try {
+        // Criamos o corpo da requisição
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('senha', senha);
+        
+        // Substitua 'caminho/do/seu/login.php' pelo caminho real no seu servidor
+        const response = await fetch(`http://${ip}/SPLQ_Server/backend/login.php`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        alert(data)
+
+        if (data.idUsu > 0) {
+          // Sucesso: seta o ID no contexto e navega
+          setIdUsu(data.idUsu);
+          alert("Bem-vindo!");
+          navigation.goBack();
+        } else {
+          // Falha: exibe mensagem de erro do backend ou padrão
+          alert(data.erro || "Login e/ou senha incorreto(s)");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao conectar com o servidor. Verifique o IP e a rede.");
+      }
+    } else {
       alert("Preencha os campos corretamente!");
     }
-  }
-
-  // REMOVIDO: const [cadastro, setCadastro] = useState(false); // Estado não utilizado
+  };
 
   const insets = useSafeAreaInsets();
   const styles = mergeStyles({})
