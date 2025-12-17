@@ -89,12 +89,16 @@ $queryCapitulos = "
 $resCapitulos = mysqli_query($conexao, $queryCapitulos);
 
 $capitulos = [];
-// CORRIGIDO: Adicionada verificação para evitar Warning se $resCapitulos for false
-if ($resCapitulos) { 
+
+if ($resCapitulos) {
     while ($row = mysqli_fetch_assoc($resCapitulos)) {
-        $capitulos[] = [$row['numCap'],$row['idQua']];
+        $capitulos[] = [
+            'idQua'  => (int) $row['idQua'],
+            'numCap' => (int) $row['numCap'],
+        ];
     }
 }
+
 
 // ----------------------------
 // 6. Nome do publicador

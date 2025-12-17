@@ -1,14 +1,6 @@
 <html>
-    <form method="POST" action='quadrinho.php'>
-        <input value='1' id='idQua' name='idQua'>
+    <form method="POST" action='capitulo.php'>
+        <input value='1' id='idCap' name='idCap'>
         <button type='submin'> Submit </button>
     </form>
 </html>
-
-const formData = new FormData();
-formData.append('idQua', 1);
-
-const response = await fetch('http://200.18.141.34/SPLQ_Server/backend/quadrinho.php', {
-  method: 'POST',
-  body: formData // Sem headers manuais aqui
-});
