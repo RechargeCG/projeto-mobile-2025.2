@@ -9,7 +9,7 @@
 		private $usuario = "root";
 		private $senha = "";
 		private $banco = "splq";
-		private $conexao;
+
 
 		//Função para retornar a conexão com o banco
 		function criarConexao(){
@@ -18,3 +18,4 @@
 			return $conexao;
 		}
 	}
+?>
