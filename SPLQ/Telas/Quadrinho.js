@@ -43,11 +43,12 @@ import {
     const route = useRoute();
     const insets = useSafeAreaInsets();
   
-    // Simulação: idUsuarioLogado viria de um contexto global ou dos params.
+    // Simulação: idUsu viria de um contexto global ou dos params.
     // Vamos usar '1' como ID do usuário logado para testes.
     // Em um app real, você buscaria isso de um estado global (Redux, Context) ou AsyncStorage.
     // const { idUsu } = route.params; 
-    const idUsuarioLogado = 1; // ID fixo para demonstração (assumindo que o publicador é 1)
+    const idUsu = 1; // ID fixo para demonstração (assumindo que o publicador é 1)
+    const IP = "http://192.168.1.7";
   
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -65,7 +66,7 @@ import {
       try {
         const formData = new FormData();
         formData.append('idQua', 1);
-        const response = await fetch('http://192.168.1.7/SPLQ_Server/backend/quadrinho.php', {
+        const response = await fetch(IP+'/SPLQ_Server/backend/quadrinho.php', {
           method: 'POST',
           body: formData
         });
@@ -121,7 +122,7 @@ import {
     // Lógica para determinar se o usuário logado é o publicador da obra
     // Converte o fk_Usuario_idUsu para número para garantir a comparação
     const idPublicadorObra = parseInt(quadrinho.fk_Usuario_idUsu);
-    const podeEditar = idUsuarioLogado === idPublicadorObra;
+    const podeEditar = idUsu === idPublicadorObra;
 
     return (
       <View style={styles.wrapper}>
@@ -146,7 +147,7 @@ import {
         >
           <Text style={styles.screentitle}>{quadrinho.nome}</Text>
   
-          <ProportionalImageItem uri={quadrinho.fonte_capa} />
+          <ProportionalImageItem uri={IP+"/SPLQ_Server/"+quadrinho.fonte_capa} />
 
           {/* Botões de Edição Condicionais */}
           {podeEditar && (

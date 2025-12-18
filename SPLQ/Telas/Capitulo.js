@@ -59,7 +59,7 @@ export default function CapituloScreen() {
   // --- PARÂMETROS RECEBIDOS DA NAVEGAÇÃO ---
   // O idCap será usado para o fetch. O numCap é usado na UI.
   // Assumindo que você passa idCap e numCap (opcionalmente)
-  const { idCap, numCap } = /*route.params ||*/ { idCap: 1, numCap: 1 }; 
+  const { idCap, numCap } = route.params || { idCap: 1, numCap: 1 }; 
 
   alert(idCap);
   
