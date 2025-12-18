@@ -1,165 +1,164 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
-  View, 
-  Text, 
-  ImageBackground, 
-  ScrollView, 
-  Image, 
-  TouchableOpacity, 
-  TextInput,
-  // Novos Imports
-  KeyboardAvoidingView, 
-  Platform 
+  View, Text, ImageBackground, ScrollView, TouchableOpacity, 
+  TextInput, KeyboardAvoidingView, Platform, Alert, ActivityIndicator 
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mergeStyles } from '../components/GlobalStyles';
-import Icon from 'react-native-vector-icons/Ionicons'; // Importa o Icone
-
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as DocumentPicker from 'expo-document-picker';
+import { AppContext } from '../components/ContextoLogin';
+import { useRoute } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
-const avatar = require('../assets/avatar.png');
-
-const OnePieceCover = require('../assets/one-piece.png');
-const DemonSlayerCover = require('../assets/kimetsu.png');
-const JujutsuKaisenCover = require('../assets/jujutsu.png');
-const DragonBallCover = require('../assets/dragon-ball.png');
-
-
-const mockPages = [
-  { id: 1, source: OnePieceCover },
-  { id: 2, source: DemonSlayerCover },
-  { id: 3, source: JujutsuKaisenCover },
-  { id: 4, source: DragonBallCover },
-  { id: 5, source: OnePieceCover },
-];
 
 export default function CadastrarCapituloScreen({ navigation }) {
   const insets = useSafeAreaInsets();
- 
-  const styles = mergeStyles(LocalStyles); // Usando LocalStyles para o header
+  const route = useRoute();
+  const { ip } = useContext(AppContext);
+  
+  // Recebe o idQua da tela de Quadrinho ou Perfil
+  const { idQua } = route.params || { idQua: 1 }; 
 
   const [capituloNum, setCapituloNum] = useState('');
-  const [currentPageIndex, setCurrentPageIndex] = useState(0); 
+  const [arquivo, setArquivo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
- 
-  const handleNext = () => {
-    setCurrentPageIndex((prevIndex) => 
-      prevIndex === mockPages.length - 1 ? 0 : prevIndex + 1
-    );
+  const selecionarArquivo = async () => {
+    try {
+      const res = await DocumentPicker.getDocumentAsync({
+        type: ['application/x-cbz', 'application/zip', 'application/octet-stream'],
+        copyToCacheDirectory: true,
+      });
+
+      if (!res.canceled) {
+        setArquivo(res.assets[0]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handlePrev = () => {
-    setCurrentPageIndex((prevIndex) => 
-      prevIndex === 0 ? mockPages.length - 1 : prevIndex - 1
-    );
+  const handleCadastrar = async () => {
+    if (!capituloNum || !arquivo) {
+      Alert.alert("Erro", "Preencha o número do capítulo e selecione o arquivo .cbz");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('idQua', idQua);
+      formData.append('numCap', capituloNum);
+      
+      // Preparação do arquivo para o FormData no mobile
+      formData.append('arquivo', {
+        uri: arquivo.uri,
+        name: arquivo.name,
+        type: 'application/octet-stream', 
+      });
+
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/cadastrar_capitulo.php`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        Alert.alert("Sucesso", "Capítulo enviado com sucesso!");
+        navigation.goBack();
+      } else {
+        Alert.alert("Erro", data.error || "Falha no upload");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível conectar ao servidor");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const currentImage = mockPages[currentPageIndex];
+  const styles = mergeStyles(LocalStyles);
 
   return (
-    <View style={styles.wrapper}>
+    <View style={{ flex: 1, backgroundColor: '#000' }}>
       <ImageBackground source={image} style={styles.background} />
-
+      <View style={{ paddingTop: insets.top }} />
       
-      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
-      {/* HEADER CORRIGIDO com seta de voltar e espaçamento */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        
-        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-          <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-        </TouchableOpacity>
+        <Text style={[styles.screentitle, { fontSize: 20 }]}>Novo Capítulo</Text>
+        <View style={{ width: 30 }} />
       </View>
 
-      
-      {/* BODY WRAPPED WITH KEYBOARDAVOIDINGVIEW */}
       <KeyboardAvoidingView 
-        style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+        style={{ flex: 1 }}
       >
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            
-            <Text style={[styles.screentitle, { marginBottom: 20 }]}>Cadastrar Capítulo</Text>
+        <ScrollView contentContainerStyle={{ padding: 20 }}>
+          
+          <View style={styles.boxContainer}>
+            <Text style={styles.labelText}>Número do capítulo</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder='Ex: 1'
+              placeholderTextColor="rgba(255, 255, 255, 0.5)"
+              value={capituloNum}
+              onChangeText={setCapituloNum}
+              keyboardType='numeric'
+            />
+          </View>
 
-            
-            <TouchableOpacity 
-              style={[styles.buttonContainer, { backgroundColor: '#222', marginBottom: 20 }]}
-       
-            >
-              <Text style={styles.buttonText}>Escolher o arquivo</Text>
+          <View style={[styles.boxContainer, { marginTop: 20 }]}>
+            <Text style={styles.labelText}>Arquivo do Capítulo (.cbz ou .zip)</Text>
+            <TouchableOpacity style={styles.uploadArea} onPress={selecionarArquivo}>
+              <Icon name="cloud-upload-outline" size={40} color="white" />
+              <Text style={{ color: 'white', marginTop: 10 }}>
+                {arquivo ? arquivo.name : "Clique para selecionar o arquivo"}
+              </Text>
             </TouchableOpacity>
+          </View>
 
-           
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
-             
-              
-             
-              <View style={styles.carouselContainer}>
-                
-               
-                <TouchableOpacity style={styles.navArrowButton} onPress={handlePrev}>
-                  <Text style={styles.navArrowText}>{'<'}</Text>
-                </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.buttonContainer, { marginTop: 40, backgroundColor: loading ? '#555' : '#e74c3c' }]}
+            onPress={handleCadastrar}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.buttonText}>Finalizar Cadastro</Text>
+            )}
+          </TouchableOpacity>
 
-                
-                <View style={styles.carouselImageWrapper}>
-                  <Image 
-                    source={currentImage.source} 
-                    style={styles.coverMedium} 
-                    resizeMode="cover"
-                  />
-                  <Text style={styles.helperText}>
-                    Pag {currentPageIndex + 1}/{mockPages.length}
-                  </Text>
-                </View>
-
-                {/* Seta Direita */}
-                <TouchableOpacity style={styles.navArrowButton} onPress={handleNext}>
-                  <Text style={styles.navArrowText}>{'>'}</Text>
-                </TouchableOpacity>
-
-              </View>
-            </View>
-
-            
-            <View style={styles.boxContainer}> 
-              <Text style={styles.labelText}>Número do capítulo</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder='Ex: 105'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
-                value={capituloNum}
-                onChangeText={setCapituloNum}
-                keyboardType='numeric'
-              />
-            </View>
-
-            
-            <TouchableOpacity 
-              style={[styles.buttonContainer, { marginTop: 30, marginBottom: 50 }]}
-              // AÇÃO DE NAVEGAÇÃO ADICIONADA
-              onPress={() => navigation.navigate('Capitulo')}
-            >
-              <Text style={styles.buttonText}>Cadastrar Capitulo</Text>
-            </TouchableOpacity>
-
-          </ScrollView>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
 }
 
-// Estilos Locais: Garante que o header use flexbox para espaçar os ícones
 const LocalStyles = {
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15, // Espaçamento nas laterais
-    paddingVertical: 8, 
+    paddingHorizontal: 20,
+    height: 60,
   },
-};z
+  uploadArea: {
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    borderStyle: 'dashed',
+    borderRadius: 10,
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)'
+  }
+};

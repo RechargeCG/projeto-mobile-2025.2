@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   View, 
   Text, 
@@ -9,20 +9,19 @@ import {
   TextInput, 
   Modal, 
   FlatList,
-  // Novos Imports
   KeyboardAvoidingView, 
-  Platform 
+  Platform,
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mergeStyles } from '../components/GlobalStyles'; 
-import Icon from 'react-native-vector-icons/Ionicons'; // Importa o Icone
-
+import Icon from 'react-native-vector-icons/Ionicons';
+import { AppContext } from '../components/ContextoLogin';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
-const avatar = require('../assets/avatar.png');
-
 const placeholderCover = require('../assets/capa.png'); 
-
 
 const availableTags = [
   { id: '1', name: 'Ação' }, { id: '2', name: 'Aventura' }, { id: '3', name: 'Comédia' },
@@ -31,255 +30,324 @@ const availableTags = [
   { id: '10', name: 'Esportes' }, { id: '11', name: 'Musical' }, { id: '12', name: 'Histórico' },
   { id: '13', name: 'Mecha' }, { id: '14', name: 'Slice of Life' },
 ];
-const MAX_SELECTION_LIMIT = 4;
 
-
-export default function EditarObraScreen({ navigation }) {
+export default function EditarObraScreen() {
   const insets = useSafeAreaInsets();
-  const styles = mergeStyles(LocalStyles); // Usando LocalStyles para o header
-  
-  
-  const [nomeObra, setNomeObra] = useState('');
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { idUsu, ip } = useContext(AppContext);
+  const { idQua } = route.params; // ID da obra vindo da navegação
+
+  const [loading, setLoading] = useState(true);
+  const [nome, setNome] = useState('');
   const [autor, setAutor] = useState('');
   const [editora, setEditora] = useState('');
-  const [sinopse, setSinopse] = useState('');
-  
-  
+  const [descricao, setDescricao] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTagIds, setSelectedTagIds] = useState([]);
 
+  const styles = mergeStyles(LocalStyles);
 
-  
-  const toggleTag = (tagId) => {
-    const isSelected = selectedTagIds.includes(tagId);
-    if (isSelected) {
-      setSelectedTagIds((prevSelected) =>
-        prevSelected.filter((id) => id !== tagId)
-      );
-    } else if (selectedTagIds.length < MAX_SELECTION_LIMIT) {
-      setSelectedTagIds((prevSelected) =>
-        [...prevSelected, tagId]
-      );
+  // Carregar dados da obra ao iniciar
+  useEffect(() => {
+    fetchObra();
+  }, []);
+
+  const fetchObra = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('idQua', idQua);
+
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/quadrinho.php`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setNome(data.quadrinho.nome);
+        setAutor(data.quadrinho.autor);
+        setEditora(data.quadrinho.editora);
+        setDescricao(data.quadrinho.descricao);
+        // Ajuste conforme o formato que as tags salvam no seu banco (ex: string separada por vírgula)
+        if (data.quadrinho.tag) {
+           setSelectedTags(data.quadrinho.tag.split(', '));
+        }
+      } else {
+        Alert.alert("Erro", "Não foi possível carregar os dados da obra.");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
- 
-  const getSelectedTagText = () => {
-    if (selectedTagIds.length === 0) {
-      return 'Selecionar tags';
+  const salvarAlteracoes = async () => {
+    if (!nome || !autor) {
+      Alert.alert("Erro", "Nome e Autor são obrigatórios.");
+      return;
     }
-    const selectedNames = selectedTagIds.map(id => {
-      const tag = availableTags.find(t => t.id === id);
-      return tag ? tag.name : '';
-    });
-    return selectedNames.join(', ');
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('idQua', idQua);
+      formData.append('nome', nome);
+      formData.append('autor', autor);
+      formData.append('editora', editora);
+      formData.append('descricao', descricao);
+      formData.append('tags', selectedTags.join(', '));
+      formData.append('idUsu', idUsu);
+
+      // Substituir pelo seu arquivo de update no backend
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/editar_obra.php`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        Alert.alert("Sucesso", "Obra atualizada com sucesso!");
+        navigation.goBack();
+      } else {
+        Alert.alert("Erro", result.error || "Erro ao atualizar obra.");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Falha na conexão com o servidor.");
+    } finally {
+      setLoading(false);
+    }
   };
 
- 
+  const toggleTag = (tagName) => {
+    if (selectedTags.includes(tagName)) {
+      setSelectedTags(selectedTags.filter(t => t !== tagName));
+    } else {
+      setSelectedTags([...selectedTags, tagName]);
+    }
+  };
 
+  if (loading && !nome) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#000' }}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.wrapper}>
       <ImageBackground source={image} style={styles.background} />
-
-     
-      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
-      {/* HEADER CORRIGIDO com seta de voltar e espaçamento */}
-      <View style={styles.header}>
+      
+      <View style={[styles.header, { paddingTop: insets.top }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        
-        <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-          <Image source={avatar} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-        </TouchableOpacity>
+        <Text style={styles.screentitle}>Editar Obra</Text>
+        <View style={{ width: 30 }} /> 
       </View>
 
-      
-      {/* BODY WRAPPED WITH KEYBOARDAVOIDINGVIEW */}
       <KeyboardAvoidingView 
-        style={styles.body}
+        style={{ flex: 1 }} 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            
-            <Text style={[styles.screentitle, { marginBottom: 20 }]}>Editar Obra</Text>
-
-          
-            <TouchableOpacity 
-              style={[styles.buttonContainer, { marginBottom: 10, backgroundColor: 'rgba(0,0,0,0.6)' }]}
-              onPress={() => alert('Abrir seleção de imagem')}
-            >
-              <Text style={styles.buttonText}>Escolher imagem de capa</Text>
+        <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
+          <View style={{ alignItems: 'center', marginVertical: 20 }}>
+            <TouchableOpacity style={styles.coverUploadButton}>
+              <Image source={placeholderCover} style={styles.coverPreview} />
+              <View style={styles.uploadIconBadge}>
+                <Icon name="camera" size={20} color="white" />
+              </View>
             </TouchableOpacity>
+            <Text style={styles.uploadText}>Alterar Capa</Text>
+          </View>
 
-            
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
-             
-              <Image 
-                source={placeholderCover} 
-                style={styles.cover} 
-                resizeMode="cover"
-              />
-            </View>
-
-            
-            <View style={styles.boxContainer}> 
-              <Text style={styles.labelText}>Nome da obra</Text>
+          <View style={styles.formContainer}>
+            <View style={styles.boxContainer}>
+              <Text style={styles.labelText}>Título da Obra</Text>
               <TextInput
                 style={styles.inputField}
-                placeholder='Título completo da obra'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
-                value={nomeObra}
-                onChangeText={setNomeObra}
+                value={nome}
+                onChangeText={setNome}
+                placeholder="Ex: One Piece"
+                placeholderTextColor="rgba(255,255,255,0.5)"
               />
             </View>
-            
-            
-            <View style={styles.boxContainer}> 
+
+            <View style={styles.boxContainer}>
               <Text style={styles.labelText}>Autor</Text>
               <TextInput
                 style={styles.inputField}
-                placeholder='Nome do autor/mangaká'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 value={autor}
                 onChangeText={setAutor}
+                placeholder="Nome do autor"
+                placeholderTextColor="rgba(255,255,255,0.5)"
               />
             </View>
-            
-           
-            <View style={styles.boxContainer}> 
+
+            <View style={styles.boxContainer}>
               <Text style={styles.labelText}>Editora</Text>
               <TextInput
                 style={styles.inputField}
-                placeholder='Nome da editora'
-                placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 value={editora}
                 onChangeText={setEditora}
+                placeholder="Nome da editora"
+                placeholderTextColor="rgba(255,255,255,0.5)"
               />
             </View>
 
-            <View style={styles.boxContainer}> 
-              <Text style={styles.labelText}>Sinopse</Text>
-              <TextInput
-                
-                style={[styles.inputField, { height: 120, textAlignVertical: 'top' }]} 
-                placeholder='Breve descrição da obra'
-                placeholderTextColor="rgba(255, 255, 255, 0.4)" 
-                value={sinopse}
-                onChangeText={setSinopse}
-                multiline={true}
-              />
-            </View>
-
-            
             <View style={styles.boxContainer}>
-              <Text style={styles.labelText}>Gênero (Tag)</Text>
-              <TouchableOpacity
-                style={styles.displayField} 
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={styles.displayFieldText} numberOfLines={1}>
-                  {getSelectedTagText()}
-                </Text>
-                
-                <Text style={{ color: 'white', fontSize: 18, position: 'absolute', right: 15, top: 10 }}>
-                  <Text style={{ fontSize: 18, color: 'white' }}>⌄</Text> 
-                </Text>
-              </TouchableOpacity>
+              <Text style={styles.labelText}>Sinopse / Descrição</Text>
+              <TextInput
+                style={[styles.inputField, { height: 100, textAlignVertical: 'top' }]}
+                value={descricao}
+                onChangeText={setDescricao}
+                multiline
+                placeholder="Escreva sobre a obra..."
+                placeholderTextColor="rgba(255,255,255,0.5)"
+              />
             </View>
 
-            
             <TouchableOpacity 
-              style={[styles.buttonContainer, { marginTop: 30 }]}
-              onPress={() => navigation.goBack()} // Salvar e voltar
+              style={styles.tagSelectorButton} 
+              onPress={() => setModalVisible(true)}
             >
-              <Text style={styles.buttonText}>Salvar Alterações</Text>
+              <Text style={styles.buttonText}>
+                Tags: {selectedTags.length > 0 ? selectedTags.join(', ') : 'Selecionar'}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
-              style={[styles.buttonContainer, { marginTop: 10, marginBottom: 50, backgroundColor: '#c0392b' }]}
-        
+              style={[styles.buttonContainer, { marginTop: 30 }]} 
+              onPress={salvarAlteracoes}
+              disabled={loading}
             >
-              <Text style={styles.buttonText}>Excluir obra</Text>
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Salvar Alterações</Text>
+              )}
             </TouchableOpacity>
-
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
-      
-     
+
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible} 
-        onRequestClose={() => setModalVisible(false)} 
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalCenteredView}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Selecione Gêneros (4 max)</Text>
-            
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Escolha as Tags</Text>
             <FlatList
-              data={availableTags} 
+              data={availableTags}
               keyExtractor={(item) => item.id}
-              style={styles.modalListContainer}
-              contentContainerStyle={styles.modalListContent}
-              showsVerticalScrollIndicator={false}
+              numColumns={2}
               renderItem={({ item }) => {
-                const isSelected = selectedTagIds.includes(item.id);
-
+                const isSelected = selectedTags.includes(item.name);
                 return (
                   <TouchableOpacity 
-                    key={item.id}
-                    style={styles.modalTagItem} 
-                    onPress={() => toggleTag(item.id)}
+                    style={[styles.tagItem, isSelected && styles.tagItemSelected]} 
+                    onPress={() => toggleTag(item.name)}
                   >
-                    <Text style={styles.modalTagText}>{item.name}</Text>
-                    
-                    <View style={[
-                      styles.modalCheckbox,
-                      isSelected && styles.modalCheckboxSelected
-                    ]}>
-                      {isSelected && <Text style={styles.modalCheckMark}>✓</Text>}
-                    </View>
+                    <Text style={styles.tagText}>{item.name}</Text>
                   </TouchableOpacity>
                 );
               }}
             />
-
-            <View style={styles.modalButtonGroup}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.modalCloseButton]} 
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalTextStyle}>Fechar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.modalSaveButton]} 
-                onPress={() => { 
-                  
-                  setModalVisible(false);
-                }}
-              >
-                <Text style={styles.modalTextStyle}>Salvar</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity 
+              style={[styles.buttonContainer, { width: '100%', marginTop: 20 }]} 
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Concluir</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
     </View>
   );
 }
 
-// Estilos Locais: Garante que o header use flexbox para espaçar os ícones
 const LocalStyles = {
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15, // Espaçamento nas laterais
-    paddingVertical: 8, 
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
+  formContainer: {
+    paddingHorizontal: 20,
+  },
+  coverUploadButton: {
+    width: 150,
+    height: 220,
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#222',
+    elevation: 5,
+  },
+  coverPreview: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  uploadIconBadge: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: 8,
+    borderRadius: 20,
+  },
+  uploadText: {
+    color: 'white',
+    marginTop: 10,
+    fontFamily: 'Montserrat',
+  },
+  tagSelectorButton: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  modalCenteredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+  modalView: {
+    width: '90%',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 20,
+    padding: 20,
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  tagItem: {
+    flex: 1,
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+    backgroundColor: '#333',
+    alignItems: 'center',
+  },
+  tagItemSelected: {
+    backgroundColor: '#e74c3c',
+  },
+  tagText: {
+    color: 'white',
+  }
 };
