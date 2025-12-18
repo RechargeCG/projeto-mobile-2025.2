@@ -23,6 +23,7 @@ export default function PerfilScreen() {
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
   const [obras, setObras] = useState([]);
+  const [imgUrl, setImgUrl] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function PerfilScreen() {
 
       setUsuario(data.usuario);
       setObras(data.obras);
+      setImgUrl(data.imgUrl);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -93,9 +95,13 @@ export default function PerfilScreen() {
 
         <View style={{ alignItems: 'center' }}>
           <Image
-            source={require('../assets/avatar.png')}
-            style={{ width: 200, height: 200 }}
-          />
+              source={
+                imgUrl 
+                  ? { uri: imgUrl } // Se existir a URL/Base64, usa ela
+                  : require('../assets/avatar.png') // Se não, usa o arquivo local estático
+              }
+              style={{ width: 200, height: 200, borderRadius: 100 }}
+            />
           <Text style={styles.sectiontitle}>{usuario.nome}</Text>
         </View>
 

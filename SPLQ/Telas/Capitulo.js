@@ -6,8 +6,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native'; // Adicionado useRoute
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
+import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
 
@@ -65,7 +66,7 @@ export default function CapituloScreen() {
   
   // --- SIMULAÇÃO DO USUÁRIO LOGADO ---
   // EM PRODUÇÃO, O idUsu DEVE VIR DE UM CONTEXTO/STORE/ASYNCSTORAGE
-  const idUsuarioLogado = 1; // Exemplo: ID do usuário logado
+  const { idUsuarioLogado, ip } = useContext(AppContext);
 
   // --- ESTADOS DE CARREGAMENTO E DADOS ---
   const [loading, setLoading] = useState(true);
@@ -109,7 +110,7 @@ export default function CapituloScreen() {
       formData.append('idCap', idCap); 
 
       // URL base do seu backend
-      const response = await fetch('http://192.168.1.7/SPLQ_Server/backend/capitulo.php', {
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/capitulo.php`, {
         method: 'POST',
         body: formData,
       });

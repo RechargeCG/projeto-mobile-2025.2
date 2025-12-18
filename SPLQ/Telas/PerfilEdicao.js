@@ -4,21 +4,21 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { mergeStyles } from '../components/GlobalStyles';
 import { TextInput } from 'react-native-gesture-handler';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 // Biblioteca para escolher imagens (Certifique-se de que está instalada: npx expo install expo-image-picker)
 import * as ImagePicker from 'expo-image-picker'; 
+import { AppContext } from '../components/ContextoLogin';
 
 const image = require('../assets/background.png');
-
-// **ATENÇÃO:** Substitua pelo URL do seu script PHP no servidor/ambiente de desenvolvimento
-const API_URL = 'http://192.168.2.102/SPLQ_Server/backend/editar_perfil.php'; 
 
 export default function PerfilEdicaoScreen({ }) {
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagemSelecionada, setImagemSelecionada] = useState(null); // URI da imagem
+
+  const { idUsu, setIdUsu, ip } = useContext(AppContext);
 
   // --- Funções de Manipulação de Imagem ---
   const pickImage = async () => {
@@ -41,10 +41,44 @@ export default function PerfilEdicaoScreen({ }) {
       setImagemSelecionada(result.assets[0].uri); 
     }
   };
+
+  const deletarConta = async () => {
+    const formData = new FormData();
+    formData.append('id', idUsu); 
+
+    try {
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/deleta_conta.php`, {
+        method: 'POST',
+        headers: {
+            // Não defina Content-Type, pois o FormData faz isso automaticamente (multipart/form-data)
+            // Se precisar enviar tokens de sessão/autenticação, adicione-os aqui
+        },
+        body: formData,
+      });
+
+      // Se o PHP retornar um cabeçalho de Location, o fetch não segue por padrão
+      if (response.ok) {
+        // Você pode checar o corpo da resposta se o PHP retornar mensagens de sucesso/erro
+        const textResponse = await response.text();
+        console.log('Resposta do Servidor:', textResponse);
+
+        setIdUsu(0); // Limpa o ID no contexto para voltar à tela de login
+        Alert.alert('Sucesso', 'Perfil excluído com sucesso!');
+        navigation.goBack(); // Volta para a tela de perfil após o sucesso
+      } else {
+        Alert.alert('Erro', 'Falha ao excluir o perfil. Status: ' + response.status);
+      }
+    } catch (error) {
+      console.error('Erro de rede/servidor:', error);
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor.');
+    }
+
+  }
   
   // --- Função de Envio de Dados ---
   const handleSave = async () => {
     const formData = new FormData();
+    formData.append('id', idUsu);
 
     // 1. Adicionar Nome e Descrição se alterados (para o PHP fazer o UPDATE)
     if (nome) {
@@ -60,7 +94,6 @@ export default function PerfilEdicaoScreen({ }) {
       const fileType = uriParts[uriParts.length - 1];
       
       formData.append('imagem', {
-        id: 1,
         uri: imagemSelecionada,
         name: `profile.${fileType}`, // Nome do arquivo no $_FILES do PHP
         type: `image/${fileType}`, // Tipo MIME
@@ -68,7 +101,7 @@ export default function PerfilEdicaoScreen({ }) {
     }
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/editar_perfil.php`, {
         method: 'POST',
         headers: {
             // Não defina Content-Type, pois o FormData faz isso automaticamente (multipart/form-data)
@@ -157,7 +190,10 @@ export default function PerfilEdicaoScreen({ }) {
               <Text style={styles.buttonText}>Salvar Alterações</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ ...styles.buttonContainer, marginTop: 0 }}>
+            <TouchableOpacity 
+              style={{ ...styles.buttonContainer, marginTop: 0 }}
+              onPress={deletarConta}
+            >
               <Text style={[styles.buttonText, { color: '#ff5555' }]}>Deletar Conta</Text>
             </TouchableOpacity>
 
