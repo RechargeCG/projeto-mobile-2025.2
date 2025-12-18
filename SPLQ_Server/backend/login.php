@@ -7,7 +7,7 @@
     // Define o cabeçalho para JSON
     header('Content-Type: application/json');    
 
-    if(!isset($_POST['email']) || !isset($_POST['senha']) $_POST['email'] == '' || $_POST['senha'] == '') {
+    if(!isset($_POST['email']) || !isset($_POST['senha']) || $_POST['email'] == '' || $_POST['senha'] == '') {
         echo json_encode(["idUsu" => 0, "erro" => "Campos vazios"]);
         exit();
     }

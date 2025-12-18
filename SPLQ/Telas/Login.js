@@ -31,8 +31,6 @@ export default function LoginScreen({ }) {
 
         const data = await response.json();
 
-        alert(data)
-
         if (data.idUsu > 0) {
           // Sucesso: seta o ID no contexto e navega
           setIdUsu(data.idUsu);

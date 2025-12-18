@@ -32,7 +32,6 @@ export default function PerfilScreen() {
   const fetchPerfil = async () => {
     try {
       const formData = new FormData();
-      alert(idUsu)
       formData.append('idPerfil', idUsu);
 
       const response = await fetch(`http://${ip}/SPLQ_Server/backend/acessa_perfil.php`, {
