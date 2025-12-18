@@ -146,6 +146,41 @@ export default function CapituloScreen() {
     }
   }, [idCap]); // Recarrega se o idCap mudar
 
+  const enviarComentario = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('idUsu', idUsuarioLogado);
+      formData.append('idCap', idCap);
+      formData.append('comentario', novoComentario);
+  
+      const response = await fetch(
+        `http://${ip}/SPLQ_Server/backend/comentar.php`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+  
+      setComentarios(data.comentarios);
+      setNovoComentario('');
+  
+    } catch (err) {
+      Alert.alert('Erro', err.message);
+    }
+  };
+  
+  useEffect(() => {
+    if (novoComentario) {
+      enviarComentario();
+    }
+  }, [novoComentario]); // Recarrega se o novoComentario mudar
+
   // --- Variáveis derivadas (para uso na UI) ---
   const totalPaginas = paginas.length;
   // O id do publicador é o fk_Usuario_idUsu do quadrinho
