@@ -1,74 +1,76 @@
-import React, { useState, useContext } from 'react';
 import { Text, View, ImageBackground, TouchableOpacity, TextInput, Platform, KeyboardAvoidingView, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
 import { AppContext } from '../components/ContextoLogin';
 import { useNavigation } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
 
-// 🚨 IMPORTANTE: SUBSTITUIR PELO IP OU DOMÍNIO DO SEU SERVIDOR PHP 🚨
-const API_BASE_URL = 'http://192.168.1.7/SPLQ'; 
-const API_LOGIN = `${API_BASE_URL}/login.php`; 
-
-const styles = mergeStyles({})
-
-export default function LoginScreen({ }) {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
   const navigation = useNavigation();
-  // Pega a função de login do Contexto
-  const { handleLogin } = useContext(AppContext); 
-  const insets = useSafeAreaInsets(); // Adicionado para consistência de estilos
+
+  // Pega o IP e o Setter do ID do contexto
+  const { setIdUsu, ip } = useContext(AppContext);
 
   const fazerLogin = async () => {
-    if (email === '' || senha === '') {
-      Alert.alert("Erro", "Preencha os campos de E-mail e Senha!");
-      return;
-    }
+    if (email !== '' && senha !== '') {
+      try {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('senha', senha);
+        
+        // Monta a URL usando o IP do contexto
+        const url = `http://${ip}/SPLQ_Server/backend/login.php`;
+        console.log("Tentando logar em:", url);
 
-    try {
-        const response = await fetch(API_LOGIN, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                senha: senha,
-            }),
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
         });
 
-        const data = await response.json();
+        // Primeiro pegamos o texto para garantir que não veio um erro HTML do PHP
+        const textResponse = await response.text();
+        
+        try {
+            const data = JSON.parse(textResponse);
 
-        if (response.ok && data.usuario) {
-            // Sucesso! Chama a função do Contexto para salvar o usuário e atualizar o estado
-            const success = await handleLogin(data.usuario);
-            if(success) {
-                // Redireciona para a tela principal (MainTabs) ou usa navigation.goBack() 
-                // dependendo da sua navegação em App.js
-                navigation.navigate('MainTabs'); 
+            if (data.sucesso) {
+              // Sucesso: Salva o ID no contexto global
+              setIdUsu(data.idUsu);
+              Alert.alert("Bem-vindo!", `Olá, ${data.nome}`);
+              navigation.goBack(); // Volta para a tela anterior (ou navega para Home)
             } else {
-                Alert.alert("Erro de Sessão", "Login OK, mas não foi possível salvar a sessão.");
+              // Erro de lógica (senha errada, etc)
+              Alert.alert("Atenção", data.erro || "Login e/ou senha incorreto(s)");
             }
-        } else {
-            // Exibe a mensagem de erro vinda do PHP (e.g., senha incorreta)
-            Alert.alert("Falha no Login", data.message || "Ocorreu um erro desconhecido.");
+
+        } catch (e) {
+            console.error("Resposta não é JSON:", textResponse);
+            Alert.alert("Erro Técnico", "O servidor respondeu com um formato inválido. Verifique o console.");
         }
 
-    } catch (error) {
-        console.error("Erro na requisição de login:", error);
-        Alert.alert("Erro de Conexão", "Não foi possível conectar ao servidor. Verifique a URL.");
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Erro de Conexão", "Não foi possível conectar ao servidor. Verifique o IP no ContextoLogin.js");
+      }
+    } else {
+      Alert.alert("Campos vazios", "Preencha o e-mail e a senha!");
     }
   };
 
-  // ... (JSX do Login)
+  const insets = useSafeAreaInsets();
+  const styles = mergeStyles({})
+
   return (
     <View style={{flex:1}}>
       <ImageBackground source={image} style={styles.background} />
       <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
       <KeyboardAvoidingView style={{flex: 1, justifyContent: 'center', margin: '5%'}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        
         <View style={styles.boxContainer}>
           <Text style={styles.labelText}>E-mail</Text>
           <TextInput
@@ -77,10 +79,11 @@ export default function LoginScreen({ }) {
               placeholderTextColor="rgba(255, 255, 255, 0.4)"
               value={email}
               onChangeText={setEmail}
-              keyboardType='email-address'
-              autoCapitalize='none'
+              keyboardType="email-address"
+              autoCapitalize="none"
           />
         </View>
+
         <View style={[styles.boxContainer, { marginTop: 10 }]}> 
           <Text style={styles.labelText}>Senha</Text>
           <TextInput
@@ -92,13 +95,16 @@ export default function LoginScreen({ }) {
               onChangeText={setSenha}
           />
         </View>
+
         <TouchableOpacity style={[styles.buttonContainer, { marginTop: 20 }]} onPress={fazerLogin}>
             <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={{marginTop: 10}} onPress={() => navigation.navigate('Cadastro')}>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Não tem uma conta?</Text>
             <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold', fontFamily: 'Montserrat'}}>Cadastre-se agora!</Text>
         </TouchableOpacity>
+
       </KeyboardAvoidingView>
     </View>
   );

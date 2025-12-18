@@ -1,95 +1,99 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, ImageBackground, ScrollView, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useState, useEffect, useContext } from 'react';
 import { mergeStyles } from '../components/GlobalStyles';
-import { AppContext } from '../components/ContextoLogin'; 
-// Importações de listas (assumidas, adapte conforme a necessidade real)
-const DestaqueList = ({ navigation }) => <View style={{height: 200}}><Text style={{color: 'white'}}>Lista Destaque Placeholder</Text></View>;
-const HorizontalList = ({ navigation }) => <View style={{height: 120}}><Text style={{color: 'white'}}>Lista Horizontal Placeholder</Text></View>;
+import { AppContext } from '../components/ContextoLogin';
+import { useNavigation } from '@react-navigation/native';
 
 const image = require('../assets/background.png');
 
-const styles = mergeStyles({})
-
 export default function PrincipalScreen() {
-    const navigation = useNavigation();
-    // Pega o nome do usuário e a função de logout do Contexto
-    const { userData, handleLogout } = useContext(AppContext);
-    
-    // Função para lidar com o logout
-    const onLogout = () => {
-        Alert.alert(
-            "Confirmação",
-            "Deseja realmente sair da sua conta?",
-            [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
-                { 
-                    text: "Sair", 
-                    onPress: async () => {
-                        const success = await handleLogout();
-                        if (success) {
-                            // Após o logout, navega de volta para o Login, removendo o histórico
-                            navigation.replace('Login'); 
-                        } else {
-                            Alert.alert("Erro", "Não foi possível desconectar.");
-                        }
-                    }
-                }
-            ]
-        );
-    };
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const styles = mergeStyles({});
+  const { ip } = useContext(AppContext);
 
-    const userName = userData ? userData.nome : 'Usuário';
+  const [loading, setLoading] = useState(true);
+  const [dados, setDados] = useState({ destaques: [], recentes: [], populares: [] });
 
-    const insets = useSafeAreaInsets();
-    
+  useEffect(() => {
+    fetchDados();
+  }, []);
+
+  const fetchDados = async () => {
+    try {
+      const response = await fetch(`http://${ip}/SPLQ_Server/backend/listar_principal.php`);
+      const json = await response.json();
+      if (json.sucesso) {
+        setDados(json);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar principal:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Componente para as listas horizontais
+  const HorizontalList = ({ data }) => (
+    <FlatList
+      horizontal
+      data={data}
+      keyExtractor={(item) => item.idQua.toString()}
+      showsHorizontalScrollIndicator={false}
+      renderItem={({ item }) => (
+        <TouchableOpacity 
+          style={{ marginRight: 15 }} 
+          onPress={() => navigation.navigate('Quadrinho', { idQua: item.idQua })}
+        >
+          <Image 
+            source={{ uri: item.fonte_capa }} // Supondo que a URL esteja no banco
+            style={{ width: 120, height: 180, borderRadius: 8 }} 
+          />
+          <Text style={{ color: 'white', width: 120, textAlign: 'center', marginTop: 5 }}>{item.nome}</Text>
+        </TouchableOpacity>
+      )}
+    />
+  );
+
+  if (loading) {
     return (
-        <View style={{flex:1}}>
-            <ImageBackground source={image} style={styles.background} />
-            <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
-            <View style={styles.header}>
-              <View style={{margin: '2%', alignItems: 'flex-end'}}>
-                <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
-                  <Image source={require('../assets/avatar.png')} style={{ width: 30, height: 30, resizeMode: 'cover' }} />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.body}>
-                <View style={styles.container}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={[styles.screentitle, { marginBottom: 15 }]}>Olá, {userName}!</Text> 
-                    <Text style={styles.screentitle}>Destaques</Text>
-                    <View style={styles.coverBox}>
-                        <DestaqueList navigation={navigation}/> 
-                    </View>
-                    
-                    <View style={{ marginBottom: 10, marginTop: -60 }}>
-                      <Text style={{...styles.covertitle, textAlign: 'left'}}>Populares</Text>
-                      <HorizontalList navigation={navigation} />
-                    </View>
-
-                    <TouchableOpacity 
-                        style={{ padding: 10, backgroundColor: '#dc3545', borderRadius: 5, marginTop: 20 }} 
-                        onPress={onLogout}>
-                        <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>Sair (Logout)</Text>
-                    </TouchableOpacity>
-
-                    <View style={{ marginVertical: 10 }}>
-                      <Text style={{...styles.covertitle, textAlign: 'left'}}>Recentes</Text>
-                      <HorizontalList navigation={navigation} />
-                    </View>
-
-                    <View style={{ marginVertical: 10 }}>
-                      <Text style={{...styles.covertitle, textAlign: 'left'}}>Nacionais</Text>
-                      <HorizontalList navigation={navigation} />
-                    </View>
-                  </ScrollView>
-                </View>
-            </View>
-        </View>
+      <View style={{flex: 1, justifyContent: 'center', backgroundColor: '#000'}}>
+        <ActivityIndicator size="large" color="#FFF" />
+      </View>
     );
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <ImageBackground source={image} style={styles.background} />
+      <View style={{ paddingTop: insets.top, backgroundColor: '#ffffffaa' }} />
+      
+      <View style={styles.header}>
+        <View style={{ margin: '2%', alignItems: 'flex-end' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+            <Image source={require('../assets/avatar.png')} style={{ width: 35, height: 35, borderRadius: 17 }} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <Text style={styles.screentitle}>Destaques</Text>
+        {/* Aqui você pode usar seu CarouselComponent passando dados.destaques */}
+        <HorizontalList data={dados.destaques} />
+
+        <View style={{ marginVertical: 20 }}>
+          <Text style={styles.covertitle}>Mais Recentes</Text>
+          <HorizontalList data={dados.recentes} />
+        </View>
+
+        <View style={{ marginVertical: 10 }}>
+          <Text style={styles.covertitle}>Populares</Text>
+          <HorizontalList data={dados.populares} />
+        </View>
+        
+        <View style={{ height: 100 }} />
+      </ScrollView>
+    </View>
+  );
 }
