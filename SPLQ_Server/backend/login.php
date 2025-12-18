@@ -1,39 +1,50 @@
 <?php
-    session_start();
-    require_once("conexao.php");
-    $conexao = new BD();
-    $conexao = $conexao->criarConexao();
+// 1. Headers obrigatórios para o Expo conseguir ler
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+header("Content-Type: application/json; charset=UTF-8");
 
-    // Define o cabeçalho para JSON
-    header('Content-Type: application/json');    
+include 'conexao.php';
 
-    if(!isset($_POST['email']) || !isset($_POST['senha']) || $_POST['email'] == '' || $_POST['senha'] == '') {
-        echo json_encode(["idUsu" => 0, "erro" => "Campos vazios"]);
-        exit();
-    }
-
-    $email = mysqli_real_escape_string($conexao, $_POST['email']);
-    $senha = $_POST['senha']; // Não use escape na senha antes do password_verify
-
-    $query = "SELECT * FROM usuario WHERE email = '$email'";
-    $resultado = mysqli_query($conexao, $query);
+// Verifica se é POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    if($resultado && mysqli_num_rows($resultado) == 1){
-        $usuario = mysqli_fetch_assoc($resultado);
-        
-        if($senha == $usuario['senha']){
-            // Sucesso: Retorna o ID
-            echo json_encode([
-                "idUsu" => (int)$usuario['idUsu'],
-                "sucesso" => true
-            ]);
-            exit();
-        }
+    // Recebe os dados (pode vir via FormData ou JSON raw)
+    $email = $_POST['email'] ?? '';
+    $senha = $_POST['senha'] ?? '';
+
+    if(empty($email) || empty($senha)){
+        echo json_encode(["sucesso" => false, "erro" => "Preencha email e senha!"]);
+        exit;
     }
 
-    // Falha: Retorna ID 0
-    echo json_encode([
-        "idUsu" => 0,
-        "erro" => "Login e/ou senha incorreto(s)"
-    ]);
+    try {
+        // 2. Consulta no Banco (Verificação simples de texto plano conforme seu cadastro)
+        // OBS: Num cenário real, usaríamos password_verify() com hash
+        $sql = "SELECT idUsu, nome FROM Usuario WHERE email = :email AND senha = :senha";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            // Login com sucesso
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode([
+                "sucesso" => true,
+                "idUsu" => $usuario['idUsu'],
+                "nome" => $usuario['nome']
+            ]);
+        } else {
+            // Login falhou
+            echo json_encode(["sucesso" => false, "erro" => "Email ou senha incorretos."]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode(["sucesso" => false, "erro" => "Erro no servidor: " . $e->getMessage()]);
+    }
+
+} else {
+    echo json_encode(["sucesso" => false, "erro" => "Método inválido"]);
+}
 ?>
