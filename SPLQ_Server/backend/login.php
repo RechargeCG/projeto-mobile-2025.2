@@ -4,7 +4,10 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-include 'conexao.php';
+require('conexao.php');
+
+$conexao = new BD();
+$conexao = $conexao->criarConexao();
 
 // Verifica se é POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,19 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // 2. Consulta no Banco (Verificação simples de texto plano conforme seu cadastro)
         // OBS: Num cenário real, usaríamos password_verify() com hash
-        $sql = "SELECT idUsu, nome FROM Usuario WHERE email = :email AND senha = :senha";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->execute();
+        $sql = "SELECT idUsu, senha, nome FROM Usuario WHERE email = '$email' LIMIT 1";
+        $res = mysqli_fetch_assoc(mysqli_query($conexao,$sql));
 
-        if ($stmt->rowCount() > 0) {
+        if(password_verify($senha,$res['senha'])){
             // Login com sucesso
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode([
                 "sucesso" => true,
-                "idUsu" => $usuario['idUsu'],
-                "nome" => $usuario['nome']
+                "idUsu" => $res['idUsu'],
+                "nome" => $res['nome']
             ]);
         } else {
             // Login falhou

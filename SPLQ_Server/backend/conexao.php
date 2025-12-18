@@ -4,10 +4,10 @@
 	mysqli_report(MYSQLI_REPORT_OFF);
 	class BD
 	{
-		private $host = "localhost:3306";
+		private $host = "localhost:3307";
 		private $hostalternativo = "localhost:3307";
 		private $usuario = "root";
-		private $senha = "root";
+		private $senha = "";
 		private $banco = "splq_db";
 
 		//Função para retornar a conexão com o banco
