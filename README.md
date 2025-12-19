@@ -29,7 +29,11 @@ Repositório do projeto Sistema para Publicação e Leitura de Quadrinhos, desen
   * comentar.php
   * deleta_conta.php
   * editar_perfil.php
+  * favoritos.php (vitor)
+  * historico.php (vitor)
   * login.php
+  * listar_principal.php (vitor)
+  * pesquisa.php (vitor)
 * bd
 * content
 
