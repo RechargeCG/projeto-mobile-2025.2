@@ -29,6 +29,7 @@ Repositório do projeto Sistema para Publicação e Leitura de Quadrinhos, desen
   * comentar.php
   * deleta_conta.php
   * editar_perfil.php
+  * login.php
 * bd
 * content
 
